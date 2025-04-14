@@ -33,6 +33,9 @@
     <ClCompile Include="5주차.cpp">
       <Filter>주차 파일</Filter>
     </ClCompile>
+    <ClCompile Include="6주차.cpp">
+      <Filter>주차 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="wheel_fs.glsl">
@@ -45,6 +48,12 @@
       <Filter>소스 파일</Filter>
     </None>
     <None Include="stick_fs.glsl">
+      <Filter>소스 파일</Filter>
+    </None>
+    <None Include="box_vs.glsl">
+      <Filter>소스 파일</Filter>
+    </None>
+    <None Include="box_fs.glsl">
       <Filter>소스 파일</Filter>
     </None>
   </ItemGroup>

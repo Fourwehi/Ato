@@ -1,3 +1,4 @@
+//stick_vs.glsl
 #version 430 core                                                   
                                                                           
  layout(location = 3) in float time;                              
