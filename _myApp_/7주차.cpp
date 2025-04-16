@@ -1,11 +1,9 @@
 #pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
-#define STB_IMAGE_IMPLEMENTATION
 
 // sb7.h 헤더 파일을 포함시킨다.
 #include <sb7.h>
 #include <vmath.h>
 #include <shader.h>
-#include <stb_image.h>
 
 // sb7::application을 상속받는다.
 class my_application : public sb7::application
@@ -39,8 +37,6 @@ public:
 
     //애플리케이션 초기화 수행한다.
     virtual void startup() {
-		stbi_set_flip_vertically_on_load(true);
-
         rendering_program1 = compile_shader1();
 
         GLfloat vertices[] = {
@@ -162,8 +158,8 @@ public:
 
 private:
     GLuint rendering_program1;
-    GLuint VAO, VBO, EBO;
-    GLuint texture1;
+    GLuint VAO, VBO;
+    GLuint vertex_array_object;
 };
 
 // DECLARE_MAIN의 하나뿐인 인스턴스

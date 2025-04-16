@@ -147,6 +147,7 @@
     <ClCompile Include="4주차.cpp" />
     <ClCompile Include="5주차.cpp" />
     <ClCompile Include="6주차.cpp" />
+    <ClCompile Include="7주차.cpp" />
     <ClCompile Include="_myApp_.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -156,6 +157,9 @@
     <None Include="stick_vs.glsl" />
     <None Include="wheel_fs.glsl" />
     <None Include="wheel_vs.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
