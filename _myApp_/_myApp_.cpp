@@ -5,7 +5,7 @@
 #include <sb7.h>
 #include <vmath.h>
 #include <shader.h>
-#include <stb_image.h>
+#include "stb_image.h"
 
 // sb7::application을 상속받는다.
 class my_application : public sb7::application
