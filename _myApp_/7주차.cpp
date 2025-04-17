@@ -1,3 +1,4 @@
+/*
 #pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
 
 // sb7.h 헤더 파일을 포함시킨다.
@@ -164,3 +165,5 @@ private:
 
 // DECLARE_MAIN의 하나뿐인 인스턴스
 DECLARE_MAIN(my_application)
+
+*/
