@@ -13,6 +13,6 @@ out vec2 vsTexCoord;
 void main(void) {
     gl_Position =  mvpM* vec4(pos, 1.0);
     vsColor = color;
-   vsTexCoord = texCoord;
+    vsTexCoord = texCoord;
 
 }
