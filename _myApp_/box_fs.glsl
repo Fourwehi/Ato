@@ -13,7 +13,7 @@ void main(void) {
     vec4 base = texture(texture1, vsTexCoord);
     vec4 overlay = texture(texture2, vsTexCoord);
     
-    if(1.0 - overlay.r < 0.1 && 1.0 - overlay.g < 0.1 && 1.0 - overlay.b < 0.1) {
+    if(1.0 - overlay.r < 0.05 && 1.0 - overlay.g < 0.05 && 1.0 - overlay.b < 0.05) {
         color = base;
     } else {
         color = overlay;
