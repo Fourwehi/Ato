@@ -1,192 +1,252 @@
+// 통합 수정된 _myApp_.cpp
 #pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
 #define STB_IMAGE_IMPLEMENTATION
-// sb7.h 헤더 파일을 포함시킨다.
 #include <sb7.h>
 #include <vmath.h>
 #include <shader.h>
 #include "stb_image.h"
+#include <cmath>
 
-// sb7::application을 상속받는다.
-class my_application : public sb7::application
-{
+class my_application : public sb7::application {
 public:
-    // 쉐이더 컴파일한다.
-    GLuint compile_shader1(void) {
-        GLuint vertex_shader;
-        GLuint fragment_shader;
-        GLuint program1;
-
-        // 버텍스 쉐이더를 생성하고 컴파일한다.
-        vertex_shader = sb7::shader::load("box_vs.glsl", GL_VERTEX_SHADER);
-
-        // 프래그먼트 쉐이더를 생성하고 컴파일한다.
-        fragment_shader = sb7::shader::load("box_fs.glsl", GL_FRAGMENT_SHADER);
-
-        //프로그램을 생성하고 쉐이더를 Attach시키고 링크한다.
-        program1 = glCreateProgram();
+        GLuint compile_shader1(void) {
+        GLuint vertex_shader = sb7::shader::load("vs.glsl", GL_VERTEX_SHADER);
+        GLuint fragment_shader = sb7::shader::load("fs.glsl", GL_FRAGMENT_SHADER);
+        GLuint program1 = glCreateProgram();
         glAttachShader(program1, vertex_shader);
         glAttachShader(program1, fragment_shader);
         glLinkProgram(program1);
-
-        //이제 프로그램이 쉐이더를 소유하므로 쉐이더를 삭제한다.
         glDeleteShader(vertex_shader);
         glDeleteShader(fragment_shader);
-
         return program1;
-
     }
 
-
-    //애플리케이션 초기화 수행한다.
-    virtual void startup() {
-        stbi_set_flip_vertically_on_load(true);
-
-        rendering_program1 = compile_shader1();
-
-        GLfloat vertices[] = {
-
-            //앞면
-            0.25f, 0.25f, 0.25f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, //0
-           -0.25f, 0.25f, 0.25f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, //1
-           -0.25f, -0.25f, 0.25f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, //2
-            0.25f, -0.25f, 0.25f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, //3  
-
-
-            //오른쪽면
-            0.25f, 0.25f, -0.25f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, //0
-            0.25f, 0.25f, 0.25f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, //1
-            0.25f, -0.25f, 0.25f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, //2
-            0.25f, -0.25f, -0.25f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, //3 
-
-            //뒷면
-            0.25f, 0.25f, -0.25f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, //0
-            -0.25f, 0.25f, -0.25f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, //1
-            -0.25f, -0.25f, -0.25f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, //2
-            0.25f, -0.25f, -0.25f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, //3 
-
-            //왼쪽면
-            -0.25f, 0.25f, 0.25f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, //0
-            -0.25f, 0.25f, -0.25f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, //1
-            -0.25f, -0.25f, -0.25f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, //2
-            -0.25f, -0.25f, 0.25f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, //3 
-
-            //아랫면
-            0.25f, -0.25f, -0.25f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, //0
-            -0.25f, -0.25f, -0.25f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, //1
-            -0.25f, -0.25f, 0.25f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, //2
-            0.25f, -0.25f, 0.25f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, //3 
-
-            //윗면
-            0.25f, 0.25f, -0.25f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, //0
-            -0.25f, 0.25f, -0.25f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, //1
-            -0.25f, 0.25f, 0.25f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, //2
-            0.25f, 0.25f, 0.25f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f //3
-        };
-
-        GLuint indices[] = {
-            //앞면
-            0, 1, 2,
-            0, 2, 3,
-            //오른쪽면
-            4, 5, 6,
-            4, 6, 7,
-            //뒷면
-            8, 10, 9,
-            8, 11, 10,
-            //왼쪽면
-            12, 13, 14,
-            12, 14, 15,
-            //아랫면
-            16, 18, 17,
-            16, 19, 18,
-            //윗면
-            20, 21, 22,
-            20, 22, 23
-        };
-
-        glGenVertexArrays(1, &VAO);
-        glBindVertexArray(VAO);
-
-        glGenBuffers(1, &VBO);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-        // 위치 속성(location = 0)
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-
-        // 색상 속성(location = 1)
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-
-        // 텍스쳐 좌표 속성(location = 2)
-        glEnableVertexAttribArray(2);
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-
-
-        //EBO를 생성하고 indices를 복사한다.
-        glGenBuffers(1, &EBO);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-        glBindVertexArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-        //---------------------------
-        // 텍스쳐 처리 과정
-
-        // 텍스처 0번: container.jpg (기본 텍스처)
-        int width, height, nrChannels;
-        glGenTextures(1, &baseTexture);
-        glBindTexture(GL_TEXTURE_2D, baseTexture);
-        unsigned char* data = stbi_load("container.jpg", &width, &height, &nrChannels, 0);
-        if (data) {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-            glGenerateMipmap(GL_TEXTURE_2D);
-        }
-        stbi_image_free(data);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-        // 오버레이 텍스처 로딩 (각 면별 side1 ~ side6)
-        const char* textureFiles[6] = {
-            "side1.jpg", "side2.jpg", "side3.jpg",
-            "side4.jpg", "side5.jpg", "side6.jpg"
-        };
-        glGenTextures(6, overlayTextures);
-        for (int i = 0; i < 6; ++i) {
-            glBindTexture(GL_TEXTURE_2D, overlayTextures[i]);
-            unsigned char* overlayData = stbi_load(textureFiles[i], &width, &height, &nrChannels, 0);
-            if (overlayData) {
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, overlayData);
+ void loadTexture(const char* filePath, GLuint& texID) {
+            glGenTextures(1, &texID);
+            glBindTexture(GL_TEXTURE_2D, texID);
+            int w, h, c;
+            unsigned char* data = stbi_load(filePath, &w, &h, &c, 0);
+            if (data) {
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
                 glGenerateMipmap(GL_TEXTURE_2D);
             }
-            stbi_image_free(overlayData);
+            stbi_image_free(data);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         }
+
+
+    virtual void startup() {
+        stbi_set_flip_vertically_on_load(true);
+        rendering_program1 = compile_shader1();
+
+        GLfloat tentVertices[] = {
+            // 꼭짓점 (윗부분)
+            0.0f,  1.0f,  0.0f,    0.5f, 1.0f,  // 0: top
+
+            // 바닥 꼭짓점 (x, y, z), (u, v)
+           -1.0f, 0.0f,  1.0f,    0.0f, 1.0f,  // 1: front-left
+            1.0f, 0.0f,  1.0f,    1.0f, 0.0f,  // 2: front-right
+           -1.0f, 0.0f, -1.0f,    0.0f, 0.0f,  // 3: back-left
+            1.0f, 0.0f, -1.0f,    1.0f, 0.0f   // 4: back-right
+        };
+
+        GLuint tentIndices[] = {
+            0, 1, 2,  // 앞면 (CCW → 카메라 쪽)
+            0, 4, 3,  // 뒷면 (CW → 반대쪽)
+            0, 3, 1,  // 왼쪽 (CCW)
+            0, 2, 4   // 오른쪽 (CCW)
+        };
+
+
+        // 바닥
+        GLfloat groundVertices[] = {
+           -10.0f, 0.0f, -10.0f,   0.0f, 0.0f,  // 0: back-left
+            10.0f, 0.0f, -10.0f,   1.0f, 0.0f,  // 1: back-right
+            10.0f, 0.0f,  10.0f,   1.0f, 1.0f,  // 2: front-right
+           -10.0f, 0.0f,  10.0f,   0.0f, 1.0f   // 3: front-left
+        };
+
+        GLuint groundIndices[] = {
+            0, 2, 1,  // CW
+            0, 3, 2
+        };
+
+        //폭포
+        GLfloat waterfallVertices[] = {
+           -10.0f,  10.0f, 10.0f,   0.0f, 1.0f,  // 0: top-front
+            -10.0f,  10.0f, -10.0f,   1.0f, 1.0f,  // 1: top-back
+            -10.0f, 0.0f, 10.0f,   1.0f, 0.0f,  // 2: bottom-front
+           -10.0f, 0.0f, -10.0f,   0.0f, 0.0f   // 3: bottom-back
+        };
+        GLuint waterfallIndices[] = {
+            3, 1, 0,
+            0, 2, 3  // CCW (정면)
+        };
+
+        // 텍스처 로딩
+        loadTexture("tent_side.jpg", tentSideTexture);
+        loadTexture("tent_front.jpg", tentFrontTexture);
+        loadTexture("tent_back.jpg", tentBackTexture);
+        loadTexture("ground.jpg", groundTexture);
+        loadTexture("waterfall.jpg", waterfallTexture);
+
+        // 텐트 VAO/VBO/EBO
+        glGenVertexArrays(1, &tentVAO);
+        glGenBuffers(1, &tentVBO);
+        glGenBuffers(1, &tentEBO);
+        glBindVertexArray(tentVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, tentVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(tentVertices), tentVertices, GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, tentEBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(tentIndices), tentIndices, GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(1);
+
+        // 바닥 VAO
+        glGenVertexArrays(1, &groundVAO);
+        glGenBuffers(1, &groundVBO);
+        glGenBuffers(1, &groundEBO);
+        glBindVertexArray(groundVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, groundVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(groundVertices), groundVertices, GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, groundEBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(groundIndices), groundIndices, GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(1);
+
+        // 폭포 VAO
+        glGenVertexArrays(1, &waterfallVAO);
+        glGenBuffers(1, &waterfallVBO);
+        glGenBuffers(1, &waterfallEBO);
+        glBindVertexArray(waterfallVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, waterfallVBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(waterfallVertices), waterfallVertices, GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, waterfallEBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(waterfallIndices), waterfallIndices, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+        
+
+        glBindVertexArray(0);
     }
 
-    // 종료 시 자원 해제
+    virtual void render(double currentTime) {
+        
+        //const GLfloat black[] = { 0.98f, 0.67f, 0.3f, 1.0f };
+        //glClearBufferfv(GL_COLOR, 0, black);
+        glClearColor(0.98f, 0.67f, 0.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CULL_FACE);
+        glUseProgram(rendering_program1);
+
+		// 카메라 설정
+        float camX = cos(currentTime) * 5.0f;
+        float camZ = sin(currentTime) * 5.0f;
+        vmath::vec3 eye(camX, 5.0f, camZ);
+        vmath::vec3 target(0.0, 0.0, 0.0);
+        vmath::vec3 up(0.0, 1.0, 0.0);
+        vmath::mat4 viewM = vmath::lookat(eye, target, up);
+        vmath::mat4 projM = vmath::perspective(50.0f, (float)(info.windowWidth / info.windowHeight), 0.1f, 1000.0f);
+
+        // 바닥
+        glBindVertexArray(groundVAO);
+        glUniform1i(glGetUniformLocation(rendering_program1, "objectID"), 1);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, groundTexture);
+        glUniform1i(glGetUniformLocation(rendering_program1, "groundTexture"), 0);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+        //텐트
+        glBindVertexArray(tentVAO);
+        glUniform1i(glGetUniformLocation(rendering_program1, "objectID"), 0);
+        glActiveTexture(GL_TEXTURE0);
+
+        for (int i = 0; i < 3; ++i) {
+            vmath::mat4 modelM = vmath::scale(tentScales[i]) * vmath::translate(tentPositions[i]);
+            vmath::mat4 mvpM = projM * viewM * modelM;
+            glUniformMatrix4fv(glGetUniformLocation(rendering_program1, "mvpM"), 1, GL_FALSE, mvpM);
+
+            // 앞면
+            glUniform1i(glGetUniformLocation(rendering_program1, "faceID"), 0);
+            glBindTexture(GL_TEXTURE_2D, tentFrontTexture);
+            glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void*)(0 * sizeof(GLuint)));
+
+            // 뒷면
+            glUniform1i(glGetUniformLocation(rendering_program1, "faceID"), 1);
+            glBindTexture(GL_TEXTURE_2D, tentBackTexture);
+            glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void*)(3 * sizeof(GLuint)));
+
+            // 옆면 왼쪽
+            glUniform1i(glGetUniformLocation(rendering_program1, "faceID"), 2);
+            glBindTexture(GL_TEXTURE_2D, tentSideTexture);
+            glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void*)(6 * sizeof(GLuint)));
+
+            // 옆면 오른쪽
+            glUniform1i(glGetUniformLocation(rendering_program1, "faceID"), 2);
+            glBindTexture(GL_TEXTURE_2D, tentSideTexture);
+            glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void*)(9 * sizeof(GLuint)));
+        }
+		glBindVertexArray(0);
+
+        // 폭포
+        glBindVertexArray(waterfallVAO);
+        float offset = fmod(currentTime, 1.0f);
+        glUniform1f(glGetUniformLocation(rendering_program1, "textureOffset"), offset);
+        glUniform1i(glGetUniformLocation(rendering_program1, "objectID"), 2);
+		glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, waterfallTexture);
+        glUniform1i(glGetUniformLocation(rendering_program1, "waterfallTexture"), 0);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+        glBindVertexArray(0);
+    }
+
     virtual void shutdown() {
-        glDeleteVertexArrays(1, &VAO);
-        glDeleteBuffers(1, &VBO);
+        glDeleteVertexArrays(1, &tentVAO);
+        glDeleteBuffers(1, &tentVBO);
+        glDeleteBuffers(1, &tentEBO);
+        glDeleteVertexArrays(1, &groundVAO);
+        glDeleteBuffers(1, &groundVBO);
+        glDeleteBuffers(1, &groundEBO);
+        glDeleteVertexArrays(1, &waterfallVAO);
+        glDeleteBuffers(1, &waterfallVBO);
+        glDeleteBuffers(1, &waterfallEBO);
         glDeleteProgram(rendering_program1);
     }
 
-    // 매 프레임마다 호출되는 렌더링 함수
-    virtual void render(double currentTime) {
-        const GLfloat black[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-        glClearBufferfv(GL_COLOR, 0, black); // 화면 초기화
-        glEnable(GL_CULL_FACE); // 컬링 활성화
+private:
+    GLuint rendering_program1;
+    GLuint tentVAO, tentVBO, tentEBO;
+    GLuint groundVAO, groundVBO, groundEBO;
+    GLuint waterfallVAO, waterfallVBO, waterfallEBO;
 
-        glUseProgram(rendering_program1); // 셰이더 프로그램 사용
+    GLuint tentSideTexture, tentFrontTexture, tentBackTexture;
+    GLuint groundTexture, waterfallTexture;
 
+    vmath::vec3 tentPositions[3] = {
+        vmath::vec3(-2.0f, 0.0f, -3.0f),
+        vmath::vec3(3.0f, 0.0f, -3.0f),
+        vmath::vec3(0.0f, 0.0f, 1.0f)
+    };
+    vmath::vec3 tentScales[3] = {
+        vmath::vec3(1.0f, 1.0f, 1.0f),
+        vmath::vec3(1.2f, 1.2f, 1.2f),
+        vmath::vec3(0.8f, 0.8f, 0.8f)
+    };
+	};
+DECLARE_MAIN(my_application)
+
+/*
         // MVP 행렬 계산
         float angle = -currentTime;
         vmath::mat4 rm = vmath::rotate((angle * -100), 0.0f, 1.0f, 0.0f);
@@ -202,35 +262,4 @@ public:
         // MVP 유니폼 설정
         GLint mvpMLocation = glGetUniformLocation(rendering_program1, "mvpM");
         glUniformMatrix4fv(mvpMLocation, 1, GL_FALSE, mvpM);
-
-        // VAO 바인딩 후 면마다 그리기
-        glBindVertexArray(VAO);
-        for (int i = 0; i < 6; ++i) {
-
-            // 기본 텍스처 (container.jpg) 바인딩
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, baseTexture);
-            glUniform1i(glGetUniformLocation(rendering_program1, "texture1"), 0);
-
-            // 오버레이 텍스처 (sideX.jpg) 바인딩
-            glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, overlayTextures[i]);
-            glUniform1i(glGetUniformLocation(rendering_program1, "texture2"), 1);
-
-            // 인덱스 버퍼의 위치에 따라 각 면 그리기
-            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)(i * 6 * sizeof(GLuint)));
-        }
-		// VAO 바인딩 해제
-		glBindVertexArray(0);
-
-    }
-
-
-private:
-    GLuint rendering_program1;
-    GLuint VAO, VBO, EBO;
-    GLuint baseTexture;        
-    GLuint overlayTextures[6];    
-};
-
-DECLARE_MAIN(my_application)
+        */

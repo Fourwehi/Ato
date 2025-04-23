@@ -148,13 +148,16 @@
     <ClCompile Include="5주차.cpp" />
     <ClCompile Include="6주차.cpp" />
     <ClCompile Include="7주차.cpp" />
+    <ClCompile Include="8주차.cpp" />
     <ClCompile Include="_myApp_.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="box_fs.glsl" />
     <None Include="box_vs.glsl" />
+    <None Include="fs.glsl" />
     <None Include="stick_fs.glsl" />
     <None Include="stick_vs.glsl" />
+    <None Include="vs.glsl" />
     <None Include="wheel_fs.glsl" />
     <None Include="wheel_vs.glsl" />
   </ItemGroup>
