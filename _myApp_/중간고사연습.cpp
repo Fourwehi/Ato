@@ -1,3 +1,4 @@
+/*
 #define STB_IMAGE_IMPLEMENTATION
 #pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
 #include <sb7.h>
@@ -15,15 +16,11 @@ public:
     GLuint tentTextures[3];
     GLuint groundTexture;
     GLuint waterfallTexture;
-	GLuint wallTexture;
-	GLuint wallVAO, wallVBO, wallEBO;
-    GLuint UTVAO, UTVBO, UTEBO;
-	GLuint UTTexture;
 
     vmath::vec3 tentPositions[3] = {
-       vmath::vec3(-3.0f, 0.0f, -4.0f),
-       vmath::vec3(4.0f, 0.0f, -4.0f),
-       vmath::vec3(0.0f, 0.0f, 2.0f)
+       vmath::vec3(-2.0f, 0.0f, -3.0f),
+       vmath::vec3(3.0f, 0.0f, -3.0f),
+       vmath::vec3(0.0f, 0.0f, 1.0f)
     };
     vmath::vec3 tentScales[3] = {
         vmath::vec3(1.0f, 1.0f, 1.0f),
@@ -61,13 +58,13 @@ public:
     void createTent() {
         GLfloat tentVertices[] = {
             // ²ÀÁþÁ¡ (À­ºÎºÐ)
-            0.0f,  4.0f,  0.0f,    0.5f, 1.0f,  // 0: top
+            0.0f,  1.0f,  0.0f,    0.5f, 1.0f,  // 0: top
 
             // ¹Ù´Ú ²ÀÁþÁ¡ (x, y, z), (u, v)
-           -1.0f, 2.0f,  1.0f,    0.0f, 1.0f,  // 1: front-left
-            1.0f, 2.0f,  1.0f,    1.0f, 0.0f,  // 2: front-right
-           -1.0f, 2.0f, -1.0f,    0.0f, 0.0f,  // 3: back-left
-            1.0f, 2.0f, -1.0f,    1.0f, 0.0f   // 4: back-right
+           -1.0f, 0.0f,  1.0f,    0.0f, 1.0f,  // 1: front-left
+            1.0f, 0.0f,  1.0f,    1.0f, 0.0f,  // 2: front-right
+           -1.0f, 0.0f, -1.0f,    0.0f, 0.0f,  // 3: back-left
+            1.0f, 0.0f, -1.0f,    1.0f, 0.0f   // 4: back-right
         };
 
         GLuint tentIndices[] = {
@@ -125,143 +122,17 @@ public:
         glBindVertexArray(0);
     }
 
-    void createWall() {
-
-        GLfloat wallVertices[] = {
-
-            //¾Õ¸é
-            12.0f, 3.0f, 12.0f, 1.0f, 1.0f, //0
-           -12.0f, 3.0f, 12.0f, 0.0f, 1.0f, //1
-           -12.0f, -0.0f, 12.0f, 0.0f, 0.0f, //2
-            12.0f, -0.0f, 12.0f, 1.0f, 0.0f, //3  
-
-            //¿À¸¥ÂÊ¸é
-            12.0f, 3.0f, -12.0f, 1.0f, 1.0f, //0
-            12.0f, 3.0f, 12.0f, 0.0f, 1.0f, //1
-            12.0f, 0.0f, 12.0f, 0.0f, 0.0f, //2
-            12.0f, 0.0f, -12.0f, 1.0f, 0.0f, //3 
-
-            //µÞ¸é
-            12.0f, 3.0f, -12.0f, 0.0f, 1.0f, //0
-            -12.0f, 3.0f, -12.0f, 1.0f, 1.0f, //1
-            -12.0f, 0.0f, -12.0f, 1.0f, 0.0f, //2
-            12.0f, 0.0f, -12.0f, 0.0f, 0.0f, //3 
-
-            //¿ÞÂÊ¸é
-            -12.0f, 3.0f, 12.0f, 1.0f, 1.0f, //0
-            -12.0f, 3.0f, -12.0f, 0.0f, 1.0f, //1
-            -12.0f, 0.0f, -12.0f, 0.0f, 0.0f, //2
-            -12.0f, 0.0f, 12.0f, 1.0f, 0.0f //3 
-
-        };
-
-        GLuint wallIndices[] = {
-            //¾Õ¸é
-            0, 1, 2,
-            0, 2, 3,
-            //¿À¸¥ÂÊ¸é
-            4, 5, 6,
-            4, 6, 7,
-            //µÞ¸é
-            8, 10, 9,
-            8, 11, 10,
-            //¿ÞÂÊ¸é
-            12, 13, 14,
-            12, 14, 15
-
-        };
-
-        glGenVertexArrays(1, &wallVAO);
-        glGenBuffers(1, &wallVBO);
-        glGenBuffers(1, &wallEBO);
-        glBindVertexArray(wallVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, wallVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(wallVertices), wallVertices, GL_STATIC_DRAW);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, wallEBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(wallIndices), wallIndices, GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-        glEnableVertexAttribArray(1);
-
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
-    }
-
-    void createunderTent() {
-
-        GLfloat UTVertices[] = {
-
-            //¾Õ¸é
-            2.0f, 2.0f, 2.0f, 1.0f, 1.0f, //0
-           -2.0f, 2.0f, 2.0f, 0.0f, 1.0f, //1
-           -2.0f, -0.0f, 2.0f, 0.0f, 0.0f, //2
-            2.0f, -0.0f, 2.0f, 1.0f, 0.0f, //3  
-
-            //¿À¸¥ÂÊ¸é
-            2.0f, 2.0f, -2.0f, 1.0f, 1.0f, //0
-            2.0f, 2.0f, 2.0f, 0.0f, 1.0f, //1
-            2.0f, 0.0f, 2.0f, 0.0f, 0.0f, //2
-            2.0f, 0.0f, -2.0f, 1.0f, 0.0f, //3 
-
-            //µÞ¸é
-            2.0f, 3.0f, -2.0f, 0.0f, 1.0f, //0
-            -2.0f, 3.0f, -2.0f, 1.0f, 1.0f, //1
-            -2.0f, 0.0f, -2.0f, 1.0f, 0.0f, //2
-            2.0f, 0.0f, -2.0f, 0.0f, 0.0f, //3 
-
-            //¿ÞÂÊ¸é
-            -2.0f, 3.0f, 2.0f, 1.0f, 1.0f, //0
-            -2.0f, 3.0f, -2.0f, 0.0f, 1.0f, //1
-            -2.0f, 0.0f, -2.0f, 0.0f, 0.0f, //2
-            -2.0f, 0.0f, 2.0f, 1.0f, 0.0f //3 
-
-        };
-
-        GLuint UTIndices[] = {
-            //¾Õ¸é
-            0, 1, 2,
-            0, 2, 3,
-            //¿À¸¥ÂÊ¸é
-            4, 5, 6,
-            4, 6, 7,
-            //µÞ¸é
-            8, 10, 9,
-            8, 11, 10,
-            //¿ÞÂÊ¸é
-            12, 13, 14,
-            12, 14, 15
-
-        };
-
-        glGenVertexArrays(1, &UTVAO);
-        glGenBuffers(1, &UTVBO);
-        glGenBuffers(1, &UTEBO);
-        glBindVertexArray(UTVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, UTVBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(UTVertices), UTVertices, GL_STATIC_DRAW);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, UTEBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(UTIndices), UTIndices, GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-        glEnableVertexAttribArray(1);
-
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
-    }
-
     void createWaterfall() {
 
         GLfloat waterfallVertices[] = {
-           -1.5f, 0.01f, -10.0f,   0.0f, 0.0f,  // 0: back-left
-            1.5f, 0.01f, -10.0f,   1.0f, 0.0f,  // 1: back-right
-            1.5f, 0.01f,  10.0f,   1.0f, 1.0f,  // 2: front-right
-           -1.5f, 0.01f,  10.0f,   0.0f, 1.0f   // 3: front-left
+          -10.0f,  10.0f, 10.0f,   0.0f, 1.0f,  // 0: top-front
+           -10.0f,  10.0f, -10.0f,   1.0f, 1.0f,  // 1: top-back
+           -10.0f, 0.0f, 10.0f,   1.0f, 0.0f,  // 2: bottom-front
+          -10.0f, 0.0f, -10.0f,   0.0f, 0.0f   // 3: bottom-back
         };
         GLuint waterfallIndices[] = {
-            0, 2, 1,
-            0, 3, 2
+            3, 1, 0,
+            0, 2, 3 
         };
         glGenVertexArrays(1, &waterfallVAO);
         glGenBuffers(1, &waterfallVBO);
@@ -311,23 +182,20 @@ public:
 
         createTent();
         createGround();
-        createWall();
         createWaterfall();
-       // createunderTent();
 
-        tentTextures[0] = loadTexture("sand_front.jpg");
-        tentTextures[1] = loadTexture("sand_wall.jpg");
-        tentTextures[2] = loadTexture("sand_roof.jpg");
-        groundTexture = loadTexture("sand.jpg");
-		wallTexture = loadTexture("sky.jpg");
-        waterfallTexture = loadTexture("water.jpg");
+        tentTextures[0] = loadTexture("tent_front.jpg");
+        tentTextures[1] = loadTexture("tent_side.jpg");
+        tentTextures[2] = loadTexture("tent_back.jpg");
+        groundTexture = loadTexture("ground.jpg");
+        waterfallTexture = loadTexture("waterfall.jpg");
     }
 
     virtual void render(double currentTime) {
-        glClearColor(0.6f, 0.97f, 1.5f, 1.0f);
+        glClearColor(0.98f, 0.67f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
-
+        glEnable(GL_CULL_FACE);
         glUseProgram(rendering_program);
 
         float camX = cos(currentTime) * 5.0f;
@@ -339,69 +207,25 @@ public:
         vmath::mat4 proj = vmath::perspective(45.0f, float(info.windowWidth) / info.windowHeight, 0.1f, 100.0f);
         vmath::mat4 vp = proj * view;
 
-        // Wall
-        glBindVertexArray(wallVAO);
-        glUniform1i(glGetUniformLocation(rendering_program, "objectID"), 1);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, wallTexture);
-        glUniform1i(glGetUniformLocation(rendering_program, "wallTexture"), 0);
-        glDrawElements(GL_TRIANGLES, 30, GL_UNSIGNED_INT, 0);
-        // VAO ¹ÙÀÎµù ÇØÁ¦
-        glBindVertexArray(0);
-
-        // Under Tent
-        glBindVertexArray(UTVAO);
-        glUniform1i(glGetUniformLocation(rendering_program, "objectID"), 4);
-        glActiveTexture(GL_TEXTURE0);
-        for (int i = 0; i < 3; ++i) {
-            vmath::mat4 modelM = vmath::scale(tentScales[i]) * vmath::translate(tentPositions[i]);
-            vmath::mat4 mvpM = proj * view * modelM;
-            glUniformMatrix4fv(glGetUniformLocation(rendering_program, "mvpM"), 1, GL_FALSE, mvpM);
-
-            // ¾Õ¸é
-            glUniform1i(glGetUniformLocation(rendering_program, "faceID"), 0);
-            glBindTexture(GL_TEXTURE_2D, tentTextures[2]);
-            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)(0 * sizeof(GLuint)));
-
-            // µÞ¸é
-            glUniform1i(glGetUniformLocation(rendering_program, "faceID"), 1);
-            glBindTexture(GL_TEXTURE_2D, tentTextures[2]);
-            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)(3 * sizeof(GLuint)));
-
-            // ¿·¸é ¿ÞÂÊ
-            glUniform1i(glGetUniformLocation(rendering_program, "faceID"), 1);
-            glBindTexture(GL_TEXTURE_2D, tentTextures[2]);
-            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)(6 * sizeof(GLuint)));
-
-            // ¿·¸é ¿À¸¥ÂÊ
-            glUniform1i(glGetUniformLocation(rendering_program, "faceID"), 1);
-            glBindTexture(GL_TEXTURE_2D, tentTextures[2]);
-            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*)(9 * sizeof(GLuint)));
-        }
-        glBindVertexArray(0);
-
-
 		//Ground
         glBindVertexArray(groundVAO);
-        glUniform1i(glGetUniformLocation(rendering_program, "objectID"), 2);
+        glUniform1i(glGetUniformLocation(rendering_program, "objectID"), 1);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, groundTexture);
         glUniform1i(glGetUniformLocation(rendering_program, "groundTexture"), 0);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
 
-        
         // Waterfall
         glBindVertexArray(waterfallVAO);
         float offset = fmod(currentTime, 1.0f);
         glUniform1f(glGetUniformLocation(rendering_program, "textureOffset"), offset);
-        glUniform1i(glGetUniformLocation(rendering_program, "objectID"), 3);
+        glUniform1i(glGetUniformLocation(rendering_program, "objectID"), 2);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, waterfallTexture);
         glUniform1i(glGetUniformLocation(rendering_program, "waterfallTexture"), 0);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
-       
 
         //ÅÙÆ®
         glBindVertexArray(tentVAO);
@@ -414,17 +238,17 @@ public:
 
             // ¾Õ¸é
             glUniform1i(glGetUniformLocation(rendering_program, "faceID"), 0);
-            glBindTexture(GL_TEXTURE_2D, tentTextures[2]);
+            glBindTexture(GL_TEXTURE_2D, tentTextures[0]);
             glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void*)(0 * sizeof(GLuint)));
 
             // µÞ¸é
             glUniform1i(glGetUniformLocation(rendering_program, "faceID"), 1);
-            glBindTexture(GL_TEXTURE_2D, tentTextures[2]);
+            glBindTexture(GL_TEXTURE_2D, tentTextures[1]);
             glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void*)(3 * sizeof(GLuint)));
 
             // ¿·¸é ¿ÞÂÊ
             glUniform1i(glGetUniformLocation(rendering_program, "faceID"), 2);
-            glBindTexture(GL_TEXTURE_2D, tentTextures[2]);
+            glBindTexture(GL_TEXTURE_2D, tentTextures[1]);
             glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void*)(6 * sizeof(GLuint)));
 
             // ¿·¸é ¿À¸¥ÂÊ
@@ -439,14 +263,12 @@ public:
         glDeleteVertexArrays(1, &tentVAO);
         glDeleteVertexArrays(1, &groundVAO);
         glDeleteVertexArrays(1, &waterfallVAO);
-        glDeleteVertexArrays(1, &wallVAO);
         glDeleteBuffers(1, &tentVBO);
         glDeleteBuffers(1, &groundVBO);
-        glDeleteBuffers(1, &wallVBO);
         glDeleteBuffers(1, &waterfallVBO);
-
         glDeleteProgram(rendering_program);
     }
 };
 
 DECLARE_MAIN(my_application)
+*/

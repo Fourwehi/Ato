@@ -150,11 +150,14 @@
     <ClCompile Include="7주차.cpp" />
     <ClCompile Include="8주차.cpp" />
     <ClCompile Include="_myApp_.cpp" />
+    <ClCompile Include="중간고사연습.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="box_fs.glsl" />
     <None Include="box_vs.glsl" />
     <None Include="fs.glsl" />
+    <None Include="pr_fs.glsl" />
+    <None Include="pr_vs.glsl" />
     <None Include="stick_fs.glsl" />
     <None Include="stick_vs.glsl" />
     <None Include="vs.glsl" />

@@ -42,6 +42,9 @@
     <ClCompile Include="8주차.cpp">
       <Filter>주차 파일</Filter>
     </ClCompile>
+    <ClCompile Include="중간고사연습.cpp">
+      <Filter>주차 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="wheel_fs.glsl">
@@ -68,6 +71,8 @@
     <None Include="fs.glsl">
       <Filter>소스 파일</Filter>
     </None>
+    <None Include="pr_fs.glsl" />
+    <None Include="pr_vs.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stb_image.h">
