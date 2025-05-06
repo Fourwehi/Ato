@@ -204,7 +204,7 @@ public:
 
         glUseProgram(rendering_program1); // 셰이더 프로그램 사용
 
-        // MVP 행렬 계산
+		// 모델 변환 행렬 생성
         float angle = -currentTime;
         vmath::mat4 rm = vmath::rotate((angle * -100), 0.0f, 1.0f, 0.0f);
         vmath::mat4 tm = vmath::translate((float)sin(angle), 0.0f, (float)cos(angle));
