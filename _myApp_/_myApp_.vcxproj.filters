@@ -45,34 +45,53 @@
     <ClCompile Include="중간고사연습.cpp">
       <Filter>주차 파일</Filter>
     </ClCompile>
+    <ClCompile Include="midterm.cpp">
+      <Filter>주차 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="wheel_fs.glsl">
-      <Filter>소스 파일</Filter>
-    </None>
-    <None Include="wheel_vs.glsl">
-      <Filter>소스 파일</Filter>
-    </None>
-    <None Include="stick_vs.glsl">
-      <Filter>소스 파일</Filter>
-    </None>
-    <None Include="stick_fs.glsl">
-      <Filter>소스 파일</Filter>
-    </None>
     <None Include="box_vs.glsl">
       <Filter>소스 파일</Filter>
     </None>
     <None Include="box_fs.glsl">
       <Filter>소스 파일</Filter>
     </None>
-    <None Include="vs.glsl">
-      <Filter>소스 파일</Filter>
-    </None>
     <None Include="fs.glsl">
+      <Filter>주차 파일</Filter>
+    </None>
+    <None Include="midpractice_fs.glsl">
+      <Filter>주차 파일</Filter>
+    </None>
+    <None Include="midpractice_vs.glsl">
+      <Filter>주차 파일</Filter>
+    </None>
+    <None Include="stick_fs.glsl">
+      <Filter>주차 파일</Filter>
+    </None>
+    <None Include="vs.glsl">
+      <Filter>주차 파일</Filter>
+    </None>
+    <None Include="stick_vs.glsl">
+      <Filter>주차 파일</Filter>
+    </None>
+    <None Include="wheel_fs.glsl">
+      <Filter>주차 파일</Filter>
+    </None>
+    <None Include="wheel_vs.glsl">
+      <Filter>주차 파일</Filter>
+    </None>
+    <None Include="week8_box_fs.glsl">
+      <Filter>주차 파일</Filter>
+    </None>
+    <None Include="week8_box_vs.glsl">
+      <Filter>주차 파일</Filter>
+    </None>
+    <None Include="light_vs.glsl">
       <Filter>소스 파일</Filter>
     </None>
-    <None Include="pr_fs.glsl" />
-    <None Include="pr_vs.glsl" />
+    <None Include="light_fs.glsl">
+      <Filter>소스 파일</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stb_image.h">

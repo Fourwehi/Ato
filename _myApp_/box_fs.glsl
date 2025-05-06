@@ -1,22 +1,49 @@
-//box_fs.glsl  
-#version 430 core  
+#version 430 core
 
-in vec3 vsColor;  
-in vec2 vsTexCoord;  
+in vec3 vsPos;
+in vec3 vsNormal;
+in vec2 vsTexCoord;
 
-uniform sampler2D texture1; // container  
-uniform sampler2D texture2; // side  
+// 머티리얼 구조체: 디퓨즈 맵, 스페큘러 맵, shininess
+struct Material {
+    sampler2D diffuse;
+    sampler2D specular;
+    float     shininess;
+};
+uniform Material material;
 
-out vec4 color;  
+// 라이트 구조체: 위치 + ambient/diffuse/specular 강도
+struct Light {
+    vec3 position;
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
+uniform Light light;
 
-void main(void) {
-    vec4 base = texture(texture1, vsTexCoord);
-    vec4 overlay = texture(texture2, vsTexCoord);
-    
-    if(1.0 - overlay.r < 0.05 && 1.0 - overlay.g < 0.05 && 1.0 - overlay.b < 0.05) {
-        color = base;
-    } else {
-        color = overlay;
-    }
-    
-    }
+uniform vec3 viewPos;  // 카메라 위치
+
+out vec4 fragColor;
+
+void main()
+{
+    // 1) Ambient
+    vec3 texColor  = vec3(texture(material.diffuse, vsTexCoord));
+    vec3 ambient   = light.ambient * texColor;
+
+    // 2) Diffuse
+    vec3 norm     = normalize(vsNormal);
+    vec3 lightDir = normalize(light.position - vsPos);
+    float diff    = max(dot(norm, lightDir), 0.0);
+    vec3 diffuse  = light.diffuse * diff * texColor;
+
+    // 3) Specular
+    vec3 viewDir    = normalize(viewPos - vsPos);
+    vec3 reflectDir = reflect(-lightDir, norm);
+    float spec      = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    vec3 specMap    = vec3(texture(material.specular, vsTexCoord));
+    vec3 specular   = light.specular * spec * specMap;
+
+    vec3 result = ambient + diffuse + specular;
+    fragColor = vec4(result, 1.0);
+}
