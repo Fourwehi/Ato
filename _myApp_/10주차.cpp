@@ -1,3 +1,4 @@
+/*
 #pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
 #define STB_IMAGE_IMPLEMENTATION
 // sb7.h 헤더 파일을 포함시킨다.
@@ -278,3 +279,4 @@ public:
 };
 
 DECLARE_MAIN(my_application)
+*/
