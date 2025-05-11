@@ -48,14 +48,11 @@
     <ClCompile Include="midterm.cpp">
       <Filter>주차 파일</Filter>
     </ClCompile>
+    <ClCompile Include="10주차.cpp">
+      <Filter>주차 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="box_vs.glsl">
-      <Filter>소스 파일</Filter>
-    </None>
-    <None Include="box_fs.glsl">
-      <Filter>소스 파일</Filter>
-    </None>
     <None Include="fs.glsl">
       <Filter>주차 파일</Filter>
     </None>
@@ -86,10 +83,40 @@
     <None Include="week8_box_vs.glsl">
       <Filter>주차 파일</Filter>
     </None>
-    <None Include="light_vs.glsl">
-      <Filter>소스 파일</Filter>
+    <None Include="week10_fs.glsl">
+      <Filter>주차 파일</Filter>
+    </None>
+    <None Include="week10_vs.glsl">
+      <Filter>주차 파일</Filter>
+    </None>
+    <None Include="box_fs.glsl">
+      <Filter>주차 파일</Filter>
+    </None>
+    <None Include="box_vs.glsl">
+      <Filter>주차 파일</Filter>
     </None>
     <None Include="light_fs.glsl">
+      <Filter>주차 파일</Filter>
+    </None>
+    <None Include="light_vs.glsl">
+      <Filter>주차 파일</Filter>
+    </None>
+    <None Include="simple_color_fs.glsl">
+      <Filter>소스 파일</Filter>
+    </None>
+    <None Include="basic_texturing_fs.glsl">
+      <Filter>소스 파일</Filter>
+    </None>
+    <None Include="basic_texturing_vs.glsl">
+      <Filter>소스 파일</Filter>
+    </None>
+    <None Include="simple_color_vs.glsl">
+      <Filter>소스 파일</Filter>
+    </None>
+    <None Include="basic_lighting_fs.glsl">
+      <Filter>소스 파일</Filter>
+    </None>
+    <None Include="basic_lighting_vs.glsl">
       <Filter>소스 파일</Filter>
     </None>
   </ItemGroup>
