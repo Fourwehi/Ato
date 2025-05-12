@@ -303,11 +303,35 @@ public:
 		glBindTexture(GL_TEXTURE_2D, textures[0]);
 		glBindVertexArray(VAOs[0]);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		//*/
+		w*/
 
 		// 라이팅 설정 ---------------------------------------
 		vmath::vec3 lightPos = vmath::vec3((float)sin(currentTime * 0.5f), 0.25f, (float)cos(currentTime * 0.5f) * 0.7f);// (0.0f, 0.5f, 0.0f);
-		vmath::vec3 lightColor(1.0f, 1.0f, 1.0f);
+		vmath::vec3 lightColor = vmath::vec3(1.0f);
+		vmath::vec3 ambientCol = lightColor * 0.2f;
+		vmath::vec3 diffuseCol = lightColor * 0.5f;
+
+		// basic_lighting 셰이더 사용
+		glUseProgram(shader_programs[1]);
+		
+		// 원하는 shininess 값 설정 (예: 32.0)
+		float shininess = 32.0f;
+		glUniform1f(glGetUniformLocation(shader_programs[1], "material.shininess"), shininess);
+
+		// diffuse는 texture unit 0, specular는 texture unit 1
+		glActiveTexture(GL_TEXTURE0);
+		glUniform1i(glGetUniformLocation(shader_programs[1], "material.diffuse"), 0);
+		glBindTexture(GL_TEXTURE_2D, textures[1]);  
+		glActiveTexture(GL_TEXTURE1);
+		glUniform1i(glGetUniformLocation(shader_programs[1], "material.specular"), 1);
+		glBindTexture(GL_TEXTURE_2D, textures[2]);
+		
+		// Light 구조체 uniform
+		glUniform3fv(glGetUniformLocation(shader_programs[1], "light.position"), 1, lightPos);
+		glUniform3fv(glGetUniformLocation(shader_programs[1], "light.ambient"), 1, ambientCol);
+		glUniform3fv(glGetUniformLocation(shader_programs[1], "light.diffuse"), 1, diffuseCol);
+		glUniform3fv(glGetUniformLocation(shader_programs[1], "light.specular"), 1, lightColor);
+
 		vmath::vec3 viewPos = eye;
 		vmath::vec3 boxColor(1.0f, 0.5f, 0.31f);
 
@@ -339,7 +363,7 @@ public:
 		}
 
 
-		// 피라미드 (광원) 그리기 ---------------------------------------
+		// 광원 그리기 ---------------------------------------
 		float move_y = (float)cos(currentTime) * 0.2f + 0.5f;
 		float scaleFactor = 0.05f;// (float)cos(currentTime)*0.05f + 0.2f;
 		vmath::mat4 transform = vmath::translate(lightPos) *
@@ -347,7 +371,7 @@ public:
 			vmath::scale(scaleFactor, scaleFactor, scaleFactor);
 
 
-
+		// 광원 텍스처 설정
 		glUseProgram(shader_programs[2]);
 
 		glUniform3fv(glGetUniformLocation(shader_programs[2], "color"), 1, lightColor);
