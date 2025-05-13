@@ -101,27 +101,36 @@
     <None Include="light_vs.glsl">
       <Filter>주차 파일</Filter>
     </None>
-    <None Include="simple_color_fs.glsl">
+    <None Include="W10_basic_lighting_fs.glsl">
+      <Filter>주차 파일</Filter>
+    </None>
+    <None Include="W10_basic_lighting_vs.glsl">
+      <Filter>주차 파일</Filter>
+    </None>
+    <None Include="W10_basic_texturing_fs.glsl">
+      <Filter>주차 파일</Filter>
+    </None>
+    <None Include="W10_basic_texturing_vs.glsl">
+      <Filter>주차 파일</Filter>
+    </None>
+    <None Include="W10_simple_color_fs.glsl">
+      <Filter>주차 파일</Filter>
+    </None>
+    <None Include="W10_simple_color_vs.glsl">
+      <Filter>주차 파일</Filter>
+    </None>
+    <None Include="simple_phong_fs.glsl">
       <Filter>소스 파일</Filter>
     </None>
-    <None Include="basic_texturing_fs.glsl">
-      <Filter>소스 파일</Filter>
-    </None>
-    <None Include="basic_texturing_vs.glsl">
-      <Filter>소스 파일</Filter>
-    </None>
-    <None Include="simple_color_vs.glsl">
-      <Filter>소스 파일</Filter>
-    </None>
-    <None Include="basic_lighting_fs.glsl">
-      <Filter>소스 파일</Filter>
-    </None>
-    <None Include="basic_lighting_vs.glsl">
+    <None Include="simple_phong_vs.glsl">
       <Filter>소스 파일</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stb_image.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

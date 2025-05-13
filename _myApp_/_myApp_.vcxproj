@@ -155,10 +155,12 @@
     <ClCompile Include="중간고사연습.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="basic_lighting_fs.glsl" />
-    <None Include="basic_lighting_vs.glsl" />
-    <None Include="basic_texturing_fs.glsl" />
-    <None Include="basic_texturing_vs.glsl" />
+    <None Include="simple_phong_fs.glsl" />
+    <None Include="simple_phong_vs.glsl" />
+    <None Include="W10_basic_lighting_fs.glsl" />
+    <None Include="W10_basic_lighting_vs.glsl" />
+    <None Include="W10_basic_texturing_fs.glsl" />
+    <None Include="W10_basic_texturing_vs.glsl" />
     <None Include="box_fs.glsl" />
     <None Include="box_vs.glsl" />
     <None Include="fs.glsl" />
@@ -166,8 +168,8 @@
     <None Include="light_vs.glsl" />
     <None Include="midpractice_fs.glsl" />
     <None Include="midpractice_vs.glsl" />
-    <None Include="simple_color_fs.glsl" />
-    <None Include="simple_color_vs.glsl" />
+    <None Include="W10_simple_color_fs.glsl" />
+    <None Include="W10_simple_color_vs.glsl" />
     <None Include="stick_fs.glsl" />
     <None Include="stick_vs.glsl" />
     <None Include="vs.glsl" />
@@ -179,6 +181,7 @@
     <None Include="wheel_vs.glsl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Model.h" />
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
