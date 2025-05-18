@@ -143,6 +143,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="10주차.cpp" />
+    <ClCompile Include="11주차.cpp" />
     <ClCompile Include="2주차.cpp" />
     <ClCompile Include="3주차.cpp" />
     <ClCompile Include="4주차.cpp" />
@@ -155,8 +156,8 @@
     <ClCompile Include="중간고사연습.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="simple_phong_fs.glsl" />
-    <None Include="simple_phong_vs.glsl" />
+    <None Include="W11_simple_phong_fs.glsl" />
+    <None Include="W11_simple_phong_vs.glsl" />
     <None Include="W10_basic_lighting_fs.glsl" />
     <None Include="W10_basic_lighting_vs.glsl" />
     <None Include="W10_basic_texturing_fs.glsl" />
@@ -173,8 +174,8 @@
     <None Include="stick_fs.glsl" />
     <None Include="stick_vs.glsl" />
     <None Include="vs.glsl" />
-    <None Include="week10_fs.glsl" />
-    <None Include="week10_vs.glsl" />
+    <None Include="week10_ready_fs.glsl" />
+    <None Include="week10_ready_vs.glsl" />
     <None Include="week8_box_fs.glsl" />
     <None Include="week8_box_vs.glsl" />
     <None Include="wheel_fs.glsl" />

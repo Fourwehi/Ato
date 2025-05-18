@@ -1,4 +1,6 @@
-// sb6.h 헤더 파일을 포함시킨다.
+#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
+
+// sb7.h 헤더 파일을 포함시킨다.
 #include <sb7.h>
 #include <vmath.h>
 #include <shader.h>
@@ -37,186 +39,20 @@ public:
 	// 애플리케이션 초기화 수행한다.
 	virtual void startup()
 	{
+		// 클래스 내부 변수 초기화
+		initValues();
+
 		// 쉐이더 프로그램 컴파일 및 연결
 		shader_program = compile_shader("simple_phong_vs.glsl", "simple_phong_fs.glsl");
 
 		stbi_set_flip_vertically_on_load(true);
 
-		// 두 번째 객체 정의 : 박스 --------------------------------------------------
-		// 박스 점들의 위치와 컬러, 텍스처 좌표를 정의한다.
-		float box_s = 1.0f, box_t = 1.0f;
-		GLfloat box_pos[] = {
-			// 뒷면
-			-0.25f, 0.5f, -0.25f,
-			0.25f, 0.0f, -0.25f,
-			-0.25f, 0.0f, -0.25f,
+		// 첫 번째 객체 정의 : OBJ 모델  --------------------------------------------------
+		objModel.init();
+		objModel.loadOBJ("squid_girl.obj");
+		objModel.loadDiffuseMap("squid_girl.png");
 
-			0.25f, 0.0f, -0.25f,
-			-0.25f, 0.5f, -0.25f,
-			0.25f, 0.5f, -0.25f,
-			// 우측면
-			0.25f, 0.0f, -0.25f,
-			0.25f, 0.5f, -0.25f,
-			0.25f, 0.0f, 0.25f,
-
-			0.25f, 0.0f, 0.25f,
-			0.25f, 0.5f, -0.25f,
-			0.25f, 0.5f, 0.25f,
-			// 정면
-			0.25f, 0.0f, 0.25f,
-			0.25f, 0.5f, 0.25f,
-			-0.25f, 0.0f, 0.25f,
-
-			-0.25f, 0.0f, 0.25f,
-			0.25f, 0.5f, 0.25f,
-			-0.25f, 0.5f, 0.25f,
-			// 좌측면
-			-0.25f, 0.0f, 0.25f,
-			-0.25f, 0.5f, 0.25f,
-			-0.25f, 0.0f, -0.25f,
-
-			-0.25f, 0.0f, -0.25f,
-			-0.25f, 0.5f, 0.25f,
-			-0.25f, 0.5f, -0.25f,
-			// 바닥면
-			-0.25f, 0.0f, 0.25f,
-			0.25f, 0.0f, -0.25f,
-			0.25f, 0.0f, 0.25f,
-
-			0.25f, 0.0f, -0.25f,
-			-0.25f, 0.0f, 0.25f,
-			-0.25f, 0.0f, -0.25f,
-			// 윗면
-			-0.25f, 0.5f, -0.25f,
-			0.25f, 0.5f, 0.25f,
-			0.25f, 0.5f, -0.25f,
-
-			0.25f, 0.5f, 0.25f,
-			-0.25f, 0.5f, -0.25f,
-			-0.25f, 0.5f, 0.25f,
-		};
-
-		GLfloat box_tex[] = {
-
-			box_s, box_t,
-			0.0f, 0.0f,
-			box_s, 0.0f,
-
-			0.0f, 0.0f,
-			box_s, box_t,
-			0.0f, box_t,
-
-			box_s, 0.0f,
-			box_s, box_t,
-			0.0f, 0.0f,
-
-			0.0f, 0.0f,
-			box_s, box_t,
-			0.0f, box_t,
-
-			box_s, 0.0f,
-			box_s, box_t,
-			0.0f, 0.0f,
-
-			0.0f, 0.0f,
-			box_s, box_t,
-			0.0f, box_t,
-
-			box_s, 0.0f,
-			box_s, box_t,
-			0.0f, 0.0f,
-
-			0.0f, 0.0f,
-			box_s, box_t,
-			0.0f, box_t,
-
-			box_s, 0.0f,
-			0.0f, box_t,
-			0.0f, 0.0f,
-
-			0.0f, box_t,
-			box_s, 0.0,
-			box_s, box_t,
-
-			0.0f, box_t,
-			box_s, 0.0f,
-			box_s, box_t,
-
-			box_s, 0.0f,
-			0.0f, box_t,
-			0.0f, 0.0f,
-		};
-
-		GLfloat box_norm[] = {
-
-			0.0f, 0.0f, -1.0f,
-			0.0f, 0.0f, -1.0f,
-			0.0f, 0.0f, -1.0f,
-
-			0.0f, 0.0f, -1.0f,
-			0.0f, 0.0f, -1.0f,
-			0.0f, 0.0f, -1.0f,
-
-			1.0f, 0.0f, 0.0f,
-			1.0f, 0.0f, 0.0f,
-			1.0f, 0.0f, 0.0f,
-
-			1.0f, 0.0f, 0.0f,
-			1.0f, 0.0f, 0.0f,
-			1.0f, 0.0f, 0.0f,
-
-			0.0f, 0.0f, 1.0f,
-			0.0f, 0.0f, 1.0f,
-			0.0f, 0.0f, 1.0f,
-
-			0.0f, 0.0f, 1.0f,
-			0.0f, 0.0f, 1.0f,
-			0.0f, 0.0f, 1.0f,
-
-			-1.0f, 0.0f, 0.0f,
-			-1.0f, 0.0f, 0.0f,
-			-1.0f, 0.0f, 0.0f,
-
-			-1.0f, 0.0f, 0.0f,
-			-1.0f, 0.0f, 0.0f,
-			-1.0f, 0.0f, 0.0f,
-
-			0.0f, -1.0f, 0.0f,
-			0.0f, -1.0f, 0.0f,
-			0.0f, -1.0f, 0.0f,
-
-			0.0f, -1.0f, 0.0f,
-			0.0f, -1.0f, 0.0f,
-			0.0f, -1.0f, 0.0f,
-
-			0.0f, 1.0f, 0.0f,
-			0.0f, 1.0f, 0.0f,
-			0.0f, 1.0f, 0.0f,
-
-			0.0f, 1.0f, 0.0f,
-			0.0f, 1.0f, 0.0f,
-			0.0f, 1.0f, 0.0f
-		};
-
-		box.init();
-		box.setupMesh(36, box_pos, box_tex, box_norm);
-		box.loadDiffuseMap("container2.png");
-		box.loadSpecularMap("container2_specular.png");
-
-		// 박스 10개 포지션 설정
-		boxPositions.push_back(vmath::vec3(0.0f, 0.0f, 0.0f));
-		boxPositions.push_back(vmath::vec3(2.0f, 5.0f, -15.0f));
-		boxPositions.push_back(vmath::vec3(-1.5f, -2.2f, -2.5f));
-		boxPositions.push_back(vmath::vec3(-3.8f, -2.0f, -12.3f));
-		boxPositions.push_back(vmath::vec3(2.4f, -0.4f, -3.5f));
-		boxPositions.push_back(vmath::vec3(-1.7f, 3.0f, -7.5f));
-		boxPositions.push_back(vmath::vec3(1.3f, -2.0f, -2.5f));
-		boxPositions.push_back(vmath::vec3(1.5f, 2.0f, -2.5f));
-		boxPositions.push_back(vmath::vec3(1.5f, 0.2f, -1.5f));
-		boxPositions.push_back(vmath::vec3(-1.3f, 1.0f, -1.5f));
-
-
-		//  세 번째 객체 정의 : 피라미드 --------------------------------------------------
+		// 두 번째 객체 정의 : 피라미드 --------------------------------------------------
 		// 피라미드 점들의 위치와 컬러, 텍스처 좌표를 정의한다.
 		GLfloat pyramid_vertices[] = {
 			1.0f, 0.0f, -1.0f,    // 우측 상단
@@ -240,9 +76,11 @@ public:
 			5, 0, 3,
 		};
 
-		pyramid.init();
-		pyramid.setupMesh(6, pyramid_vertices);
-		pyramid.setupIndices(24, pyramid_indices);
+		pyramidModel.init();
+		pyramidModel.setupMesh(6, pyramid_vertices);
+		pyramidModel.setupIndices(24, pyramid_indices);
+
+		glEnable(GL_MULTISAMPLE);
 	}
 
 	// 애플리케이션 끝날 때 호출된다.
@@ -254,34 +92,37 @@ public:
 	// 렌더링 virtual 함수를 작성해서 오버라이딩한다.
 	virtual void render(double currentTime)
 	{
-		//currentTime = 1.46;
+		if (!pause)
+			animationTime += currentTime - previousTime;
+		previousTime = currentTime;
+
 		//const GLfloat color[] = { (float)sin(currentTime) * 0.5f + 0.5f, (float)cos(currentTime) * 0.5f + 0.5f, 0.0f, 1.0f };
 		const GLfloat black[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 		glClearBufferfv(GL_COLOR, 0, black);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
-		glViewport(0, 0, info.windowWidth, info.windowHeight);
+
 
 		// 카메라 매트릭스 계산
-		float distance = 2.f;
-		vmath::vec3 eye((float)cos(currentTime * 0.1f) * distance, 1.0, (float)sin(currentTime * 0.1f) * distance);
+		float distance = 5.f;
+		//vmath::vec3 eye((float)cos(animationTime*0.3f)*distance, 1.0, (float)sin(animationTime*0.3f)*distance);
+		vmath::vec3 eye(0.0f, 1.0f, distance);
 		vmath::vec3 center(0.0, 0.0, 0.0);
 		vmath::vec3 up(0.0, 1.0, 0.0);
 		vmath::mat4 lookAt = vmath::lookat(eye, center, up);
-		float fov = 50.f;
-		vmath::mat4 projM = vmath::perspective(fov, (float)info.windowWidth / info.windowHeight, 0.1f, 1000.0f);
-
+		vmath::mat4 projM = vmath::perspective(fov, (float)info.windowWidth / (float)info.windowHeight, 0.1f, 1000.0f);
 
 		// 라이팅 설정 ---------------------------------------
-		vmath::vec3 lightPos = vmath::vec3((float)sin(currentTime * 0.5f), 0.25f, (float)cos(currentTime * 0.5f) * 0.7f);// (0.0f, 0.5f, 0.0f);
-		vmath::vec3 lightColor(1.0f, 1.0f, 1.0f);
+		float r = 2.f;
+		vmath::vec3 lightPos = vmath::vec3((float)sin(animationTime * 0.5f) * r, 0.f, (float)cos(animationTime * 0.5f) * r);
 		vmath::vec3 viewPos = eye;
 
-		// 박스 그리기 ---------------------------------------
-		float angle = currentTime * 100;
-		vmath::mat4 rotateM = vmath::rotate(angle, 0.0f, 1.0f, 0.0f);
+		vmath::vec3 lightAmbient(0.2f, 0.2f, 0.2f);
+		vmath::vec3 lightDiffuse(0.5f, 0.5f, 0.5f);
+		vmath::vec3 lightSpecular(1.0f, 1.0f, 1.0f);
 
+		// 모델 그리기 ---------------------------------------
 		glUseProgram(shader_program);
 
 		glUniformMatrix4fv(glGetUniformLocation(shader_program, "projection"), 1, GL_FALSE, projM);
@@ -289,48 +130,147 @@ public:
 
 		glUniform3fv(glGetUniformLocation(shader_program, "viewPos"), 1, viewPos);
 
-		vmath::vec3 lightAmbient(0.2f, 0.2f, 0.2f);
-		vmath::vec3 lightDiffuse(0.5f, 0.5f, 0.5f);
-		vmath::vec3 lightSpecular(1.0f, 1.0f, 1.0f);
 		glUniform3fv(glGetUniformLocation(shader_program, "light.position"), 1, lightPos);
 		glUniform3fv(glGetUniformLocation(shader_program, "light.ambient"), 1, lightAmbient);
 		glUniform3fv(glGetUniformLocation(shader_program, "light.diffuse"), 1, lightDiffuse);
 		glUniform3fv(glGetUniformLocation(shader_program, "light.specular"), 1, lightSpecular);
 
-		for (int i = 0; i < boxPositions.size(); i++)
-		{
-			float angle = 20.f * i;
-			vmath::mat4 model = vmath::translate(boxPositions[i]) *
-				vmath::rotate(angle, 1.0f, 0.3f, 0.5f) *
-				vmath::scale(1.0f);
+
+		if (lineMode)
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		else
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+		if (drawModel) {
+			vmath::mat4 model = vmath::translate(objPosition) *
+				vmath::rotate(objYangle, 0.0f, 1.0f, 0.0f) *
+				vmath::scale(0.01f);
 			glUniformMatrix4fv(glGetUniformLocation(shader_program, "model"), 1, GL_FALSE, model);
-			box.draw(shader_program);
+			objModel.draw(shader_program);
+		}
+
+		// 피라미드 그리기 ---------------------------------------
+		if (drawLight) {
+			vmath::mat4 transform = vmath::translate(lightPos) * vmath::scale(0.05f);
+			glUniformMatrix4fv(glGetUniformLocation(shader_program, "model"), 1, GL_FALSE, transform);
+			pyramidModel.draw(shader_program);
 		}
 
 
-		// 피라미드 (광원) 그리기 ---------------------------------------
-		float move_y = (float)cos(currentTime) * 0.2f + 0.5f;
-		float scaleFactor = 0.05f;// (float)cos(currentTime)*0.05f + 0.2f;
-		vmath::mat4 transform = vmath::translate(lightPos) *
-			vmath::rotate(angle * 0.5f, 0.0f, 1.0f, 0.0f) *
-			vmath::scale(scaleFactor, scaleFactor, scaleFactor);
-
-		glUniformMatrix4fv(glGetUniformLocation(shader_program, "projection"), 1, GL_FALSE, projM);
-		glUniformMatrix4fv(glGetUniformLocation(shader_program, "view"), 1, GL_FALSE, lookAt);
-		glUniformMatrix4fv(glGetUniformLocation(shader_program, "model"), 1, GL_FALSE, transform);
-
-		pyramid.draw(shader_program);
 	}
 
-	void onResize(int w, int h)
+	virtual void onResize(int w, int h)
 	{
 		sb7::application::onResize(w, h);
+
+		if (glViewport != NULL)
+			glViewport(0, 0, info.windowWidth, info.windowHeight);
 	}
+
+	virtual void init()
+	{
+		sb7::application::init();
+
+		info.samples = 8;
+		info.flags.debug = 1;
+	}
+
+	virtual void onKey(int key, int action)
+	{
+		if (action == GLFW_PRESS) {
+			switch (key) {
+			case ' ': // 스페이스바
+				pause = !pause;
+				break;
+			case '1':
+				drawModel = !drawModel;
+				break;
+			case '2':
+				drawLight = !drawLight;
+				break;
+			case 'M':
+				lineMode = !lineMode;
+				break;
+			case 'R':
+				initValues();
+				break;
+			default:
+				break;
+			};
+		}
+	}
+
+	virtual void onMouseButton(int button, int action)
+	{
+		if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+		{
+			mouseDown = true;
+
+			int x, y;
+			getMousePosition(x, y);
+			mousePostion = vmath::vec2(float(x), float(y));
+		}
+		else
+		{
+			mouseDown = false;
+		}
+	}
+
+	virtual void onMouseMove(int x, int y)
+	{
+		if (mouseDown)
+		{
+			objYangle += float(x - mousePostion[0]) / 2.f;
+			mousePostion = vmath::vec2(float(x), float(y));
+		}
+	}
+
+#define MAX_FOV 120.f
+#define MIN_FOV 10.f
+	virtual void onMouseWheel(int pos)
+	{
+		if (pos > 0)
+			fov = vmath::min(MAX_FOV, fov + 1.0f);
+		else
+			fov = vmath::max(MIN_FOV, fov - 1.0f);
+	}
+
+	void initValues()
+	{
+		drawModel = true;
+		drawLight = true;
+		pause = false;
+		animationTime = 0;
+		previousTime = 0;
+		lineMode = false;
+
+		mouseDown = false;
+
+		fov = 50.f;
+
+		objPosition = vmath::vec3(0.0f, -1.0f, 0.0f);
+		objYangle = 0.f;
+	}
+
 
 private:
 	GLuint shader_program;
-	std::vector<vmath::vec3> boxPositions;
-	Model box, pyramid;
+
+	Model objModel, pyramidModel;
+	vmath::vec3 objPosition;
+	float objYangle;
+
+	bool drawModel, drawLight;
+	bool lineMode;
+	bool pause;
+	double previousTime;
+	double animationTime;
+
+	vmath::vec2 mousePostion;
+	bool mouseDown;
+
+	float fov;
+
 };
 
 // DECLARE_MAIN의 하나뿐인 인스턴스

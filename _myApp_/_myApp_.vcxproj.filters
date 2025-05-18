@@ -51,6 +51,9 @@
     <ClCompile Include="10주차.cpp">
       <Filter>주차 파일</Filter>
     </ClCompile>
+    <ClCompile Include="11주차.cpp">
+      <Filter>주차 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="fs.glsl">
@@ -83,10 +86,10 @@
     <None Include="week8_box_vs.glsl">
       <Filter>주차 파일</Filter>
     </None>
-    <None Include="week10_fs.glsl">
+    <None Include="week10_ready_fs.glsl">
       <Filter>주차 파일</Filter>
     </None>
-    <None Include="week10_vs.glsl">
+    <None Include="week10_ready_vs.glsl">
       <Filter>주차 파일</Filter>
     </None>
     <None Include="box_fs.glsl">
@@ -119,11 +122,11 @@
     <None Include="W10_simple_color_vs.glsl">
       <Filter>주차 파일</Filter>
     </None>
-    <None Include="simple_phong_fs.glsl">
-      <Filter>소스 파일</Filter>
+    <None Include="W11_simple_phong_fs.glsl">
+      <Filter>주차 파일</Filter>
     </None>
-    <None Include="simple_phong_vs.glsl">
-      <Filter>소스 파일</Filter>
+    <None Include="W11_simple_phong_vs.glsl">
+      <Filter>주차 파일</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
