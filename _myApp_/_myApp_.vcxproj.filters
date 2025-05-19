@@ -128,6 +128,12 @@
     <None Include="W11_simple_phong_vs.glsl">
       <Filter>주차 파일</Filter>
     </None>
+    <None Include="simple_phong_vs.glsl">
+      <Filter>소스 파일</Filter>
+    </None>
+    <None Include="simple_phong_fs.glsl">
+      <Filter>소스 파일</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stb_image.h">

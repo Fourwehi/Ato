@@ -171,7 +171,7 @@ public:
 	{
 		sb7::application::init();
 
-		info.samples = 8;
+		info.samples = 4;
 		info.flags.debug = 1;
 	}
 
