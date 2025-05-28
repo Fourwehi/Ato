@@ -1,6 +1,6 @@
 #pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
 
-// sb7.h Çì´õ ÆÄÀÏÀ» Æ÷ÇÔ½ÃÅ²´Ù.
+// sb7.h í—¤ë” íŒŒì¼ì„ í¬í•¨ì‹œí‚¨ë‹¤.
 #include <sb7.h>
 #include <vmath.h>
 #include <shader.h>
@@ -10,61 +10,61 @@
 #include "stb_image.h"
 #include "Model.h"
 
-// sb6::applicationÀ» »ó¼Ó¹Ş´Â´Ù.
+// sb6::applicationì„ ìƒì†ë°›ëŠ”ë‹¤.
 class my_application : public sb7::application
 {
 public:
-	// ½¦ÀÌ´õ ÇÁ·Î±×·¥ ÄÄÆÄÀÏÇÑ´Ù.
-	GLuint compile_shader(const char* vs_file, const char* fs_file)
+	// ì‰ì´ë” í”„ë¡œê·¸ë¨ ì»´íŒŒì¼í•œë‹¤.
+	GLuint compile_shader ( const char* vs_file , const char* fs_file )
 	{
-		// ¹öÅØ½º ½¦ÀÌ´õ¸¦ »ı¼ºÇÏ°í ÄÄÆÄÀÏÇÑ´Ù.
-		GLuint vertex_shader = sb7::shader::load(vs_file, GL_VERTEX_SHADER);
+		// ë²„í…ìŠ¤ ì‰ì´ë”ë¥¼ ìƒì„±í•˜ê³  ì»´íŒŒì¼í•œë‹¤.
+		GLuint vertex_shader = sb7::shader::load ( vs_file , GL_VERTEX_SHADER );
 
-		// ÇÁ·¡±×¸ÕÆ® ½¦ÀÌ´õ¸¦ »ı¼ºÇÏ°í ÄÄÆÄÀÏÇÑ´Ù.
-		GLuint fragment_shader = sb7::shader::load(fs_file, GL_FRAGMENT_SHADER);
+		// í”„ë˜ê·¸ë¨¼íŠ¸ ì‰ì´ë”ë¥¼ ìƒì„±í•˜ê³  ì»´íŒŒì¼í•œë‹¤.
+		GLuint fragment_shader = sb7::shader::load ( fs_file , GL_FRAGMENT_SHADER );
 
-		// ÇÁ·Î±×·¥À» »ı¼ºÇÏ°í ½¦ÀÌ´õ¸¦ Attach½ÃÅ°°í ¸µÅ©ÇÑ´Ù.
-		GLuint program = glCreateProgram();
-		glAttachShader(program, vertex_shader);
-		glAttachShader(program, fragment_shader);
-		glLinkProgram(program);
+		// í”„ë¡œê·¸ë¨ì„ ìƒì„±í•˜ê³  ì‰ì´ë”ë¥¼ Attachì‹œí‚¤ê³  ë§í¬í•œë‹¤.
+		GLuint program = glCreateProgram ( );
+		glAttachShader ( program , vertex_shader );
+		glAttachShader ( program , fragment_shader );
+		glLinkProgram ( program );
 
-		// ÀÌÁ¦ ÇÁ·Î±×·¥ÀÌ ½¦ÀÌ´õ¸¦ ¼ÒÀ¯ÇÏ¹Ç·Î ½¦ÀÌ´õ¸¦ »èÁ¦ÇÑ´Ù.
-		glDeleteShader(vertex_shader);
-		glDeleteShader(fragment_shader);
+		// ì´ì œ í”„ë¡œê·¸ë¨ì´ ì‰ì´ë”ë¥¼ ì†Œìœ í•˜ë¯€ë¡œ ì‰ì´ë”ë¥¼ ì‚­ì œí•œë‹¤.
+		glDeleteShader ( vertex_shader );
+		glDeleteShader ( fragment_shader );
 
 		return program;
 	}
 
-	// ¾ÖÇÃ¸®ÄÉÀÌ¼Ç ÃÊ±âÈ­ ¼öÇàÇÑ´Ù.
-	virtual void startup()
+	// ì• í”Œë¦¬ì¼€ì´ì…˜ ì´ˆê¸°í™” ìˆ˜í–‰í•œë‹¤.
+	virtual void startup ( )
 	{
-		// Å¬·¡½º ³»ºÎ º¯¼ö ÃÊ±âÈ­
-		initValues();
+		// í´ë˜ìŠ¤ ë‚´ë¶€ ë³€ìˆ˜ ì´ˆê¸°í™”
+		initValues ( );
 
-		// ½¦ÀÌ´õ ÇÁ·Î±×·¥ ÄÄÆÄÀÏ ¹× ¿¬°á
-		shader_program = compile_shader("simple_phong_vs.glsl", "simple_phong_fs.glsl");
+		// ì‰ì´ë” í”„ë¡œê·¸ë¨ ì»´íŒŒì¼ ë° ì—°ê²°
+		shader_program = compile_shader ( "simple_phong_vs.glsl" , "simple_phong_fs.glsl" );
 
-		stbi_set_flip_vertically_on_load(true);
+		stbi_set_flip_vertically_on_load ( true );
 
-		// Ã¹ ¹øÂ° °´Ã¼ Á¤ÀÇ : OBJ ¸ğµ¨  --------------------------------------------------
-		objModel.init();
-		objModel.loadOBJ("squid_girl.obj");
-		objModel.loadDiffuseMap("squid_girl.png");
+		// ì²« ë²ˆì§¸ ê°ì²´ ì •ì˜ : OBJ ëª¨ë¸  --------------------------------------------------
+		objModel.init ( );
+		objModel.loadOBJ ( "squid_girl.obj" );
+		objModel.loadDiffuseMap ( "squid_girl.png" );
 
-		// µÎ ¹øÂ° °´Ã¼ Á¤ÀÇ : ÇÇ¶ó¹Ìµå --------------------------------------------------
-		// ÇÇ¶ó¹Ìµå Á¡µéÀÇ À§Ä¡¿Í ÄÃ·¯, ÅØ½ºÃ³ ÁÂÇ¥¸¦ Á¤ÀÇÇÑ´Ù.
-		GLfloat pyramid_vertices[] = {
-			1.0f, 0.0f, -1.0f,    // ¿ìÃø »ó´Ü
-			-1.0f, 0.0f, -1.0f,   // ÁÂÃø »ó´Ü
-			-1.0f, 0.0f, 1.0f,    // ÁÂÃø ÇÏ´Ü
-			1.0f, 0.0f, 1.0f,     // ¿ìÃø ÇÏ´Ü
-			0.0f, 1.0f, 0.0f,      // »ó´Ü ²ÀÁöÁ¡
-			0.0f, -1.0f, 0.0f,      // ÇÏ´Ü ²ÀÁöÁ¡
+		// ë‘ ë²ˆì§¸ ê°ì²´ ì •ì˜ : í”¼ë¼ë¯¸ë“œ --------------------------------------------------
+		// í”¼ë¼ë¯¸ë“œ ì ë“¤ì˜ ìœ„ì¹˜ì™€ ì»¬ëŸ¬, í…ìŠ¤ì²˜ ì¢Œí‘œë¥¼ ì •ì˜í•œë‹¤.
+		GLfloat pyramid_vertices[ ] = {
+			1.0f, 0.0f, -1.0f,    // ìš°ì¸¡ ìƒë‹¨
+			-1.0f, 0.0f, -1.0f,   // ì¢Œì¸¡ ìƒë‹¨
+			-1.0f, 0.0f, 1.0f,    // ì¢Œì¸¡ í•˜ë‹¨
+			1.0f, 0.0f, 1.0f,     // ìš°ì¸¡ í•˜ë‹¨
+			0.0f, 1.0f, 0.0f,      // ìƒë‹¨ ê¼­ì§€ì 
+			0.0f, -1.0f, 0.0f,      // í•˜ë‹¨ ê¼­ì§€ì 
 		};
 
-		// »ï°¢ÇüÀ¸·Î ±×¸± ÀÎµ¦½º¸¦ Á¤ÀÇÇÑ´Ù.
-		GLuint pyramid_indices[] = {
+		// ì‚¼ê°í˜•ìœ¼ë¡œ ê·¸ë¦´ ì¸ë±ìŠ¤ë¥¼ ì •ì˜í•œë‹¤.
+		GLuint pyramid_indices[ ] = {
 			4, 0, 1,
 			4, 1, 2,
 			4, 2, 3,
@@ -76,110 +76,110 @@ public:
 			5, 0, 3,
 		};
 
-		pyramidModel.init();
-		pyramidModel.setupMesh(6, pyramid_vertices);
-		pyramidModel.setupIndices(24, pyramid_indices);
+		pyramidModel.init ( );
+		pyramidModel.setupMesh ( 6 , pyramid_vertices );
+		pyramidModel.setupIndices ( 24 , pyramid_indices );
 
-		glEnable(GL_MULTISAMPLE);
+		glEnable ( GL_MULTISAMPLE );
 	}
 
-	// ¾ÖÇÃ¸®ÄÉÀÌ¼Ç ³¡³¯ ¶§ È£ÃâµÈ´Ù.
-	virtual void shutdown()
+	// ì• í”Œë¦¬ì¼€ì´ì…˜ ëë‚  ë•Œ í˜¸ì¶œëœë‹¤.
+	virtual void shutdown ( )
 	{
-		glDeleteProgram(shader_program);
+		glDeleteProgram ( shader_program );
 	}
 
-	// ·»´õ¸µ virtual ÇÔ¼ö¸¦ ÀÛ¼ºÇØ¼­ ¿À¹ö¶óÀÌµùÇÑ´Ù.
-	virtual void render(double currentTime)
+	// ë Œë”ë§ virtual í•¨ìˆ˜ë¥¼ ì‘ì„±í•´ì„œ ì˜¤ë²„ë¼ì´ë”©í•œë‹¤.
+	virtual void render ( double currentTime )
 	{
-		if (!pause)
+		if ( !pause )
 			animationTime += currentTime - previousTime;
 		previousTime = currentTime;
 
 		//const GLfloat color[] = { (float)sin(currentTime) * 0.5f + 0.5f, (float)cos(currentTime) * 0.5f + 0.5f, 0.0f, 1.0f };
-		const GLfloat black[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-		glClearBufferfv(GL_COLOR, 0, black);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_CULL_FACE);
+		const GLfloat black[ ] = { 0.0f, 0.0f, 0.0f, 1.0f };
+		glClearBufferfv ( GL_COLOR , 0 , black );
+		glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+		glEnable ( GL_DEPTH_TEST );
+		glEnable ( GL_CULL_FACE );
 
 
-		// Ä«¸Ş¶ó ¸ÅÆ®¸¯½º °è»ê
+		// ì¹´ë©”ë¼ ë§¤íŠ¸ë¦­ìŠ¤ ê³„ì‚°
 		float distance = 5.f;
 		//vmath::vec3 eye((float)cos(animationTime*0.3f)*distance, 1.0, (float)sin(animationTime*0.3f)*distance);
-		vmath::vec3 eye(0.0f, 1.0f, distance);
-		vmath::vec3 center(0.0, 0.0, 0.0);
-		vmath::vec3 up(0.0, 1.0, 0.0);
-		vmath::mat4 lookAt = vmath::lookat(eye, center, up);
-		vmath::mat4 projM = vmath::perspective(fov, (float)info.windowWidth / (float)info.windowHeight, 0.1f, 1000.0f);
+		vmath::vec3 eye ( 0.0f , 1.0f , distance );
+		vmath::vec3 center ( 0.0 , 0.0 , 0.0 );
+		vmath::vec3 up ( 0.0 , 1.0 , 0.0 );
+		vmath::mat4 lookAt = vmath::lookat ( eye , center , up );
+		vmath::mat4 projM = vmath::perspective ( fov , ( float ) info.windowWidth / ( float ) info.windowHeight , 0.1f , 1000.0f );
 
-		// ¶óÀÌÆÃ ¼³Á¤ ---------------------------------------
+		// ë¼ì´íŒ… ì„¤ì • ---------------------------------------
 		float r = 2.f;
-		vmath::vec3 lightPos = vmath::vec3((float)sin(animationTime * 0.5f) * r, 0.f, (float)cos(animationTime * 0.5f) * r);
+		vmath::vec3 lightPos = vmath::vec3 ( ( float ) sin ( animationTime * 0.5f ) * r , 0.f , ( float ) cos ( animationTime * 0.5f ) * r );
 		vmath::vec3 viewPos = eye;
 
-		vmath::vec3 lightAmbient(0.2f, 0.2f, 0.2f);
-		vmath::vec3 lightDiffuse(0.5f, 0.5f, 0.5f);
-		vmath::vec3 lightSpecular(1.0f, 1.0f, 1.0f);
+		vmath::vec3 lightAmbient ( 0.2f , 0.2f , 0.2f );
+		vmath::vec3 lightDiffuse ( 0.5f , 0.5f , 0.5f );
+		vmath::vec3 lightSpecular ( 1.0f , 1.0f , 1.0f );
 
-		// ¸ğµ¨ ±×¸®±â ---------------------------------------
-		glUseProgram(shader_program);
+		// ëª¨ë¸ ê·¸ë¦¬ê¸° ---------------------------------------
+		glUseProgram ( shader_program );
 
-		glUniformMatrix4fv(glGetUniformLocation(shader_program, "projection"), 1, GL_FALSE, projM);
-		glUniformMatrix4fv(glGetUniformLocation(shader_program, "view"), 1, GL_FALSE, lookAt);
+		glUniformMatrix4fv ( glGetUniformLocation ( shader_program , "projection" ) , 1 , GL_FALSE , projM );
+		glUniformMatrix4fv ( glGetUniformLocation ( shader_program , "view" ) , 1 , GL_FALSE , lookAt );
 
-		glUniform3fv(glGetUniformLocation(shader_program, "viewPos"), 1, viewPos);
+		glUniform3fv ( glGetUniformLocation ( shader_program , "viewPos" ) , 1 , viewPos );
 
-		glUniform3fv(glGetUniformLocation(shader_program, "light.position"), 1, lightPos);
-		glUniform3fv(glGetUniformLocation(shader_program, "light.ambient"), 1, lightAmbient);
-		glUniform3fv(glGetUniformLocation(shader_program, "light.diffuse"), 1, lightDiffuse);
-		glUniform3fv(glGetUniformLocation(shader_program, "light.specular"), 1, lightSpecular);
+		glUniform3fv ( glGetUniformLocation ( shader_program , "light.position" ) , 1 , lightPos );
+		glUniform3fv ( glGetUniformLocation ( shader_program , "light.ambient" ) , 1 , lightAmbient );
+		glUniform3fv ( glGetUniformLocation ( shader_program , "light.diffuse" ) , 1 , lightDiffuse );
+		glUniform3fv ( glGetUniformLocation ( shader_program , "light.specular" ) , 1 , lightSpecular );
 
 
-		if (lineMode)
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		if ( lineMode )
+			glPolygonMode ( GL_FRONT_AND_BACK , GL_LINE );
 		else
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glPolygonMode ( GL_FRONT_AND_BACK , GL_FILL );
 
-		if (drawModel) {
-			vmath::mat4 model = vmath::translate(objPosition) *
-				vmath::rotate(objYangle, 0.0f, 1.0f, 0.0f) *
-				vmath::scale(0.01f);
-			glUniformMatrix4fv(glGetUniformLocation(shader_program, "model"), 1, GL_FALSE, model);
-			objModel.draw(shader_program);
+		if ( drawModel ) {
+			vmath::mat4 model = vmath::translate ( objPosition ) *
+				vmath::rotate ( objYangle , 0.0f , 1.0f , 0.0f ) *
+				vmath::scale ( 0.01f );
+			glUniformMatrix4fv ( glGetUniformLocation ( shader_program , "model" ) , 1 , GL_FALSE , model );
+			objModel.draw ( shader_program );
 		}
 
-		// ÇÇ¶ó¹Ìµå ±×¸®±â ---------------------------------------
-		if (drawLight) {
-			vmath::mat4 transform = vmath::translate(lightPos) * vmath::scale(0.05f);
-			glUniformMatrix4fv(glGetUniformLocation(shader_program, "model"), 1, GL_FALSE, transform);
-			pyramidModel.draw(shader_program);
+		// í”¼ë¼ë¯¸ë“œ ê·¸ë¦¬ê¸° ---------------------------------------
+		if ( drawLight ) {
+			vmath::mat4 transform = vmath::translate ( lightPos ) * vmath::scale ( 0.05f );
+			glUniformMatrix4fv ( glGetUniformLocation ( shader_program , "model" ) , 1 , GL_FALSE , transform );
+			pyramidModel.draw ( shader_program );
 		}
 
 
 	}
 
-	virtual void onResize(int w, int h)
+	virtual void onResize ( int w , int h )
 	{
-		sb7::application::onResize(w, h);
+		sb7::application::onResize ( w , h );
 
-		if (glViewport != NULL)
-			glViewport(0, 0, info.windowWidth, info.windowHeight);
+		if ( glViewport != NULL )
+			glViewport ( 0 , 0 , info.windowWidth , info.windowHeight );
 	}
 
-	virtual void init()
+	virtual void init ( )
 	{
-		sb7::application::init();
+		sb7::application::init ( );
 
-		info.samples = 4;
+		info.samples = 8;
 		info.flags.debug = 1;
 	}
 
-	virtual void onKey(int key, int action)
+	virtual void onKey ( int key , int action )
 	{
-		if (action == GLFW_PRESS) {
-			switch (key) {
-			case ' ': // ½ºÆäÀÌ½º¹Ù
+		if ( action == GLFW_PRESS ) {
+			switch ( key ) {
+			case ' ': // ìŠ¤í˜ì´ìŠ¤ë°”
 				pause = !pause;
 				break;
 			case '1':
@@ -192,7 +192,7 @@ public:
 				lineMode = !lineMode;
 				break;
 			case 'R':
-				initValues();
+				initValues ( );
 				break;
 			default:
 				break;
@@ -200,15 +200,15 @@ public:
 		}
 	}
 
-	virtual void onMouseButton(int button, int action)
+	virtual void onMouseButton ( int button , int action )
 	{
-		if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+		if ( button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS )
 		{
 			mouseDown = true;
 
-			int x, y;
-			getMousePosition(x, y);
-			mousePostion = vmath::vec2(float(x), float(y));
+			int x , y;
+			getMousePosition ( x , y );
+			mousePostion = vmath::vec2 ( float ( x ) , float ( y ) );
 		}
 		else
 		{
@@ -216,26 +216,26 @@ public:
 		}
 	}
 
-	virtual void onMouseMove(int x, int y)
+	virtual void onMouseMove ( int x , int y )
 	{
-		if (mouseDown)
+		if ( mouseDown )
 		{
-			objYangle += float(x - mousePostion[0]) / 2.f;
-			mousePostion = vmath::vec2(float(x), float(y));
+			objYangle += float ( x - mousePostion[ 0 ] ) / 2.f;
+			mousePostion = vmath::vec2 ( float ( x ) , float ( y ) );
 		}
 	}
 
 #define MAX_FOV 120.f
 #define MIN_FOV 10.f
-	virtual void onMouseWheel(int pos)
+	virtual void onMouseWheel ( int pos )
 	{
-		if (pos > 0)
-			fov = vmath::min(MAX_FOV, fov + 1.0f);
+		if ( pos > 0 )
+			fov = vmath::min ( MAX_FOV , fov + 1.0f );
 		else
-			fov = vmath::max(MIN_FOV, fov - 1.0f);
+			fov = vmath::max ( MIN_FOV , fov - 1.0f );
 	}
 
-	void initValues()
+	void initValues ( )
 	{
 		drawModel = true;
 		drawLight = true;
@@ -248,7 +248,7 @@ public:
 
 		fov = 50.f;
 
-		objPosition = vmath::vec3(0.0f, -1.0f, 0.0f);
+		objPosition = vmath::vec3 ( 0.0f , -1.0f , 0.0f );
 		objYangle = 0.f;
 	}
 
@@ -256,11 +256,11 @@ public:
 private:
 	GLuint shader_program;
 
-	Model objModel, pyramidModel;
+	Model objModel , pyramidModel;
 	vmath::vec3 objPosition;
 	float objYangle;
 
-	bool drawModel, drawLight;
+	bool drawModel , drawLight;
 	bool lineMode;
 	bool pause;
 	double previousTime;
@@ -273,5 +273,5 @@ private:
 
 };
 
-// DECLARE_MAINÀÇ ÇÏ³ª»ÓÀÎ ÀÎ½ºÅÏ½º
-DECLARE_MAIN(my_application)
+// DECLARE_MAINì˜ í•˜ë‚˜ë¿ì¸ ì¸ìŠ¤í„´ìŠ¤
+DECLARE_MAIN ( my_application )
