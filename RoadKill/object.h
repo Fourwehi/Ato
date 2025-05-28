@@ -1,22 +1,25 @@
-//
-// BetterCarryingEachOther 2016.03.11
-// abstract object class
-//
-
 #pragma once
 
+// object.h and object.cpp combined as a single inline header
+
 #include <list>
+#include <iostream>
 #include "model.h"
+#include "view.h"
+#include "game.h"
+#include "debug.h"
 
 using namespace std;
 
 class Object {
 protected:
-	static int count;
+	inline static int count = 0;
 
 	const char* name;
 
+public:
 	enum Category { OBJ_ANY, OBJ_NONE, OBJ_RIGID, OBJ_ENEMY, OBJ_WATER, OBJ_LOG };
+protected:
 	enum Category cat;
 	float cbWidth, cbHeight, cbOffX, cbOffY;
 	vec3 pos, vel, acc;
@@ -28,51 +31,120 @@ protected:
 		float x1, y1, x2, y2;
 
 	public:
-		bool check(CBox *other);
-		bool inclusion(float x, float y);
-		void locate(float x, float y, float w, float h, float ofx, float ofy);
-	};
+		inline bool check(CBox* other) {
+			return this->x1 <= other->x2 && this->x2 >= other->x1 &&
+				this->y1 <= other->y2 && this->y2 >= other->y1;
+		}
 
-	CBox cb;
-	void cbUpdate();
+		inline bool inclusion(float x, float y) {
+			return x > x1 && x < x2 && y > y1 && y < y2;
+		}
 
-	Model *mod;
+		inline void locate(float x, float y, float w, float h, float ofx, float ofy) {
+			x1 = x - ofx;
+			y1 = y - ofy;
+			x2 = x + w - ofx;
+			y2 = y + h - ofy;
+		}
+	} cb;
+
+	inline void cbUpdate() {
+		cb.locate(pos.x, pos.y, cbWidth, cbHeight, cbOffX, cbOffY);
+	}
+
+	Model* mod;
 	list<Object*> children;
 
 public:
-	static void countReset();
-	static int countGet();
+	inline static void countReset() { count = 0; }
+	inline static int countGet() { return count; }
 
-	Object(float cbWidth, float cbHeight, float cbOffX, float cbOffY);
-	Object();
-	~Object();
+	inline Object(float cbWidth, float cbHeight, float cbOffX, float cbOffY)
+		: cbWidth(cbWidth), cbHeight(cbHeight), cbOffX(cbOffX), cbOffY(cbOffY), cat(OBJ_NONE), expired(false), name("Undefined") {
+	}
 
-	virtual void echo();
+	inline Object() : Object(0.0, 0.0, 0.0, 0.0) {}
+	inline virtual ~Object() {}
 
-	virtual void draw() const;
-	virtual void update();
-	virtual void push(Object* o);
-	virtual void expire();
-	virtual Object* collide(Object* other, enum Category cat);
+	inline virtual void echo() { cout << name << endl; }
 
-	virtual Object& locate(vec3 pos);
+	inline virtual void draw() const {
+		for (auto itor = children.begin(); itor != children.end(); ++itor)
+			( *itor )->draw();
+	}
 
-	virtual Object& move(vec3 dpos);
-	virtual Object& exert(vec3 dvel);
+	inline virtual void update() {
+		count++;
+		vel += acc;
+		pos += vel;
+		cbUpdate();
 
-	virtual Object& setX(float x);
-	virtual Object& setY(float y);
-	virtual Object& setZ(float z);
-	virtual Object& setXvel(float xspd);
-	virtual Object& setYvel(float yspd);
-	virtual Object& setZvel(float zspd);
-	virtual Object& setXacc(float xacc);
-	virtual Object& setYacc(float yacc);
-	virtual Object& setZacc(float zacc);
+		for (auto itor = children.begin(); itor != children.end(); ++itor)
+			( *itor )->update();
 
-	virtual vec3 getPos();
-	virtual vec3 getVel();
-	virtual vec3 getAcc();
-	virtual bool isExpired();
-	virtual enum Category getCat();
+		auto itor = children.begin();
+		while (itor != children.end()) {
+			auto citor = itor++;
+			if (( *citor )->isExpired()) {
+				delete* citor;
+				children.erase(citor);
+			}
+		}
+	}
+
+	inline virtual void push(Object* o) { children.push_back(o); }
+
+	inline virtual void expire() {
+		expired = true;
+		for (auto itor = children.begin(); itor != children.end(); ++itor) {
+			( *itor )->expire();
+			delete* itor;
+		}
+		children.clear();
+	}
+
+	inline virtual Object* collide(Object* other, enum Category cat) {
+		if (( this->cat == cat || cat == OBJ_ANY ) && ( other->cb.check(&( this->cb )) ))
+			return this;
+
+		for (auto itor = children.begin(); itor != children.end(); ++itor) {
+			Object* collidee = ( *itor )->collide(other, cat);
+			if (collidee != nullptr)
+				return collidee;
+		}
+		return nullptr;
+	}
+
+	inline virtual Object& locate(vec3 pos) {
+		this->pos = pos;
+		return *this;
+	}
+
+	inline virtual Object& move(vec3 dpos) {
+		pos += dpos;
+		return *this;
+	}
+
+	inline virtual Object& exert(vec3 dvel) {
+		vel += dvel;
+		return *this;
+	}
+
+	inline virtual Object& setX(float x) { pos.x = x; return *this; }
+	inline virtual Object& setY(float y) { pos.y = y; return *this; }
+	inline virtual Object& setZ(float z) { pos.z = z; return *this; }
+
+	inline virtual Object& setXvel(float xspd) { vel.x = xspd; return *this; }
+	inline virtual Object& setYvel(float yspd) { vel.y = yspd; return *this; }
+	inline virtual Object& setZvel(float zspd) { vel.z = zspd; return *this; }
+
+	inline virtual Object& setXacc(float xacc) { acc.x += xacc; return *this; }
+	inline virtual Object& setYacc(float yacc) { acc.y += yacc; return *this; }
+	inline virtual Object& setZacc(float zacc) { acc.z += zacc; return *this; }
+
+	inline virtual vec3 getPos() { return pos; }
+	inline virtual vec3 getVel() { return vel; }
+	inline virtual vec3 getAcc() { return acc; }
+	inline virtual bool isExpired() { return expired; }
+	inline virtual enum Category getCat() { return cat; }
 };

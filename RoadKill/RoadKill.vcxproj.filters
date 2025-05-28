@@ -24,52 +24,10 @@
     <ClCompile Include="_myApp_.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="control.cpp">
-      <Filter>임시 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="debug.cpp">
-      <Filter>임시 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="deco.cpp">
-      <Filter>임시 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="enemy.cpp">
-      <Filter>임시 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="framebuffer.cpp">
-      <Filter>임시 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="game.cpp">
-      <Filter>임시 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="generator.cpp">
-      <Filter>임시 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="InitShader.cpp">
-      <Filter>임시 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="key.cpp">
-      <Filter>임시 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="light.cpp">
-      <Filter>임시 파일</Filter>
-    </ClCompile>
     <ClCompile Include="lodepng.cpp">
       <Filter>임시 파일</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
-      <Filter>임시 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="model.cpp">
-      <Filter>임시 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="null.cpp">
-      <Filter>임시 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="object.cpp">
-      <Filter>임시 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="player.cpp">
       <Filter>임시 파일</Filter>
     </ClCompile>
     <ClCompile Include="resource.cpp">

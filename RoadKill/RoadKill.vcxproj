@@ -142,22 +142,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="control.cpp" />
-    <ClCompile Include="debug.cpp" />
-    <ClCompile Include="deco.cpp" />
-    <ClCompile Include="enemy.cpp" />
-    <ClCompile Include="framebuffer.cpp" />
-    <ClCompile Include="game.cpp" />
-    <ClCompile Include="generator.cpp" />
-    <ClCompile Include="InitShader.cpp" />
-    <ClCompile Include="key.cpp" />
-    <ClCompile Include="light.cpp" />
     <ClCompile Include="lodepng.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="model.cpp" />
-    <ClCompile Include="null.cpp" />
-    <ClCompile Include="object.cpp" />
-    <ClCompile Include="player.cpp" />
     <ClCompile Include="resource.cpp" />
     <ClCompile Include="river.cpp" />
     <ClCompile Include="shader.cpp" />
