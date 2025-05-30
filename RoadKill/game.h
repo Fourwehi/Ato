@@ -11,6 +11,7 @@
 #include <ctime>
 #include <iostream>
 
+#include <vmath.h>
 #include "player.h"
 #include "enemy.h"
 #include "deco.h"
@@ -56,13 +57,13 @@ public:
 
 		pool = new Object();
 		hillL = new Deco(
-			vec3(0.0, 0.0, 0.0),
+			vmath::vec3(0.0, 0.0, 0.0),
 			&Resource::hill,
 			&Resource::Tex::grass,
 			&Resource::Norm::grass);
 		hillR = new Deco(
-			vec3(0.0, 0.0, 0.0),
-			vec3(0.0, 0.0, 180.0),
+			vmath::vec3(0.0, 0.0, 0.0),
+			vmath::vec3(0.0, 0.0, 180.0),
 			&Resource::hill,
 			&Resource::Tex::grass,
 			&Resource::Norm::grass);
@@ -73,19 +74,19 @@ public:
 		NullLimiter* nl = new NullLimiter(0.0);
 
 		nl->push(new Deco(
-			vec3(0.0, 0.0, 0.0),
-			vec3(0.0, 0.0, 90.0),
+			vmath::vec3(0.0, 0.0, 0.0),
+			vmath::vec3(0.0, 0.0, 90.0),
 			&Resource::hill,
 			&Resource::Tex::grass,
 			&Resource::Norm::grass));
 		nl->push(new Deco(
-			vec3(0.0, grid * 3.0f, 0.0),
+			vmath::vec3(0.0, grid * 3.0f, 0.0),
 			&Resource::grass9,
 			&Resource::Tex::grass,
 			&Resource::Norm::grass));
 		nl->push(new Deco(
-			vec3(128.0, 0.0, 4.0),
-			vec3(0.0, 0.0, 90.0),
+			vmath::vec3(128.0, 0.0, 4.0),
+			vmath::vec3(0.0, 0.0, 90.0),
 			&Resource::chicken,
 			&Resource::Tex::chicken,
 			&Resource::Norm::chicken));
@@ -113,7 +114,7 @@ public:
 		PhysicalShader& ps = Shader::getPhysicalShader();
 		ps.setAmbient(Control::getAmbient());
 		ps.setSpecular(1.0);
-		ps.setUVOffset(vec2(0.0, 0.0));
+		ps.setUVOffset(vmath::vec2(0.0, 0.0));
 		Shader::lightApply();
 
 		fb.bind();
@@ -154,8 +155,8 @@ public:
 		}
 
 		glClearDepth(1.0);
-		vec4 fog = Control::getFog();
-		glClearColor(fog.x, fog.y, fog.z, fog.w);
+		vmath::vec4 fog = Control::getFog();
+		glClearColor(fog[0], fog[1], fog[2], fog[3]); // Access components using array style for vmath
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glActiveTexture(GL_TEXTURE0);
@@ -192,8 +193,8 @@ public:
 		Shader::lightClear();
 
 		if (Control::isDay()) {
-			Shader::lightPush(vec4(-1.0, -1.0, 1.0, 0.0), vec4(1.2, 1.0, 0.8, 1.0));
-			Shader::lightPush(vec4(1.0, 1.0, 1.0, 0.0), vec4(1.2, 1.0, 0.8, 0.5));
+			Shader::lightPush(vmath::vec4(-1.0, -1.0, 1.0, 0.0), vmath::vec4(1.2, 1.0, 0.8, 1.0));
+			Shader::lightPush(vmath::vec4(1.0, 1.0, 1.0, 0.0), vmath::vec4(1.2, 1.0, 0.8, 0.5));
 		}
 
 		Object::countReset();
@@ -203,10 +204,10 @@ public:
 			clear();
 			setup();
 		}
-		hillL->locate(vec3(0.0, player->getPos().y, 0.0));
-		hillL->shift(vec2(0.0, -player->getPos().y / 320.0));
-		hillR->locate(vec3(0.0, player->getPos().y, 0.0));
-		hillR->shift(vec2(0.0, player->getPos().y / 320.0));
+		hillL->locate(vmath::vec3(0.0, player->getPos().y, 0.0));
+		hillL->shift(vmath::vec2(0.0, -player->getPos().y / 320.0));
+		hillR->locate(vmath::vec3(0.0, player->getPos().y, 0.0));
+		hillR->shift(vmath::vec2(0.0, player->getPos().y / 320.0));
 		pool->update();
 		player->update();
 		View::update();

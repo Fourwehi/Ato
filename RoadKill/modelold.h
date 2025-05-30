@@ -7,7 +7,7 @@
 #include <string>
 #include <iostream>
 
-#include "vec.h"
+#include <vmath.h>
 #include "resource.h"
 #include "shader.h"
 #include "utility.h"
@@ -15,13 +15,13 @@
 using namespace std;
 
 struct vertex {
-	vec3 pos;
-	vec2 tex;
-	vec3 norm;
+	vmath::vec3 pos;
+	vmath::vec2 tex;
+	vmath::vec3 norm;
 
 	vertex() {}
 
-	vertex(const vec3& pos, const vec2& tex, const vec3& norm)
+	vertex(const vmath::vec3& pos, const vmath::vec2& tex, const vmath::vec3& norm)
 		: pos(pos), tex(tex), norm(norm) {
 	}
 };
@@ -40,19 +40,19 @@ public:
 		glGenVertexArrays(1, &vao);
 		glBindVertexArray(vao);
 
-		vector<vec2> data;
-		data.push_back(vec2(-1.0, -1.0));
-		data.push_back(vec2(0.0, 0.0));
-		data.push_back(vec2(1.0, -1.0));
-		data.push_back(vec2(1.0, 0.0));
-		data.push_back(vec2(-1.0, 1.0));
-		data.push_back(vec2(0.0, 1.0));
-		data.push_back(vec2(1.0, 1.0));
-		data.push_back(vec2(1.0, 1.0));
+		vector<vmath::vec2> data;
+		data.push_back(vmath::vec2(-1.0, -1.0));
+		data.push_back(vmath::vec2(0.0, 0.0));
+		data.push_back(vmath::vec2(1.0, -1.0));
+		data.push_back(vmath::vec2(1.0, 0.0));
+		data.push_back(vmath::vec2(-1.0, 1.0));
+		data.push_back(vmath::vec2(0.0, 1.0));
+		data.push_back(vmath::vec2(1.0, 1.0));
+		data.push_back(vmath::vec2(1.0, 1.0));
 
 		glGenBuffers(1, &fpCanonical);
 		glBindBuffer(GL_ARRAY_BUFFER, fpCanonical);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vec2) * data.size(), &data[0], GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vmath::vec2) * data.size(), &data[0], GL_STATIC_DRAW);
 		data.clear();
 	}
 
@@ -60,8 +60,8 @@ public:
 		glBindBuffer(GL_ARRAY_BUFFER, fpCanonical);
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(vec2) * 2, (void*)0);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(vec2) * 2, (void*)sizeof(vec2));
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(vmath::vec2) * 2, (void*)0);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(vmath::vec2) * 2, (void*)sizeof(vmath::vec2));
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
@@ -69,27 +69,27 @@ public:
 
 	inline Model() {}
 
-	inline void addBox(vec3 pos1, vec3 pos2) {
-		vec3 pos111 = pos1;
-		vec3 pos112 = vec3(pos1.x, pos1.y, pos2.z);
-		vec3 pos121 = vec3(pos1.x, pos2.y, pos1.z);
-		vec3 pos122 = vec3(pos1.x, pos2.y, pos2.z);
-		vec3 pos211 = vec3(pos2.x, pos1.y, pos1.z);
-		vec3 pos212 = vec3(pos2.x, pos1.y, pos2.z);
-		vec3 pos221 = vec3(pos2.x, pos2.y, pos1.z);
-		vec3 pos222 = pos2;
+	inline void addBox(vmath::vec3 pos1, vmath::vec3 pos2) {
+		vmath::vec3 pos111 = pos1;
+		vmath::vec3 pos112 = vmath::vec3(pos1[0], pos1[1], pos2[2]);
+		vmath::vec3 pos121 = vmath::vec3(pos1[0], pos2[1], pos1[2]);
+		vmath::vec3 pos122 = vmath::vec3(pos1[0], pos2[1], pos2[2]);
+		vmath::vec3 pos211 = vmath::vec3(pos2[0], pos1[1], pos1[2]);
+		vmath::vec3 pos212 = vmath::vec3(pos2[0], pos1[1], pos2[2]);
+		vmath::vec3 pos221 = vmath::vec3(pos2[0], pos2[1], pos1[2]);
+		vmath::vec3 pos222 = pos2;
 
-		vec3 nu = vec3(0.0, 0.0, 1.0);
-		vec3 nd = vec3(0.0, 0.0, -1.0);
-		vec3 nr = vec3(1.0, 0.0, 0.0);
-		vec3 nl = vec3(-1.0, 0.0, 0.0);
-		vec3 nf = vec3(0.0, 1.0, 0.0);
-		vec3 nb = vec3(0.0, -1.0, 0.0);
+		vmath::vec3 nu = vmath::vec3(0.0, 0.0, 1.0);
+		vmath::vec3 nd = vmath::vec3(0.0, 0.0, -1.0);
+		vmath::vec3 nr = vmath::vec3(1.0, 0.0, 0.0);
+		vmath::vec3 nl = vmath::vec3(-1.0, 0.0, 0.0);
+		vmath::vec3 nf = vmath::vec3(0.0, 1.0, 0.0);
+		vmath::vec3 nb = vmath::vec3(0.0, -1.0, 0.0);
 
-		vec2 lt = vec2(0.0, 0.0);
-		vec2 rt = vec2(1.0, 0.0);
-		vec2 lb = vec2(0.0, 1.0);
-		vec2 rb = vec2(1.0, 1.0);
+		vmath::vec2 lt = vmath::vec2(0.0, 0.0);
+		vmath::vec2 rt = vmath::vec2(1.0, 0.0);
+		vmath::vec2 lb = vmath::vec2(0.0, 1.0);
+		vmath::vec2 rb = vmath::vec2(1.0, 1.0);
 
 		addPoint(pos111, lt, nl); addPoint(pos112, rt, nl); addPoint(pos121, lb, nl);
 		addPoint(pos121, lb, nl); addPoint(pos112, rt, nl); addPoint(pos122, rb, nl);
@@ -110,7 +110,7 @@ public:
 		addPoint(pos222, lb, nf); addPoint(pos121, rt, nf); addPoint(pos122, rb, nf);
 	}
 
-	inline void addPoint(vec3 pos, vec2 tex, vec3 norm) {
+	inline void addPoint(vmath::vec3 pos, vmath::vec2 tex, vmath::vec3 norm) {
 		vertices.push_back(vertex(pos, tex, norm));
 	}
 
@@ -118,9 +118,9 @@ public:
 
 	inline void load(const char* fn, const char* group) {
 		ifstream f(fn);
-		vector<vec3> v(1, vec3(0.0, 0.0, 0.0));
-		vector<vec2> vt(1, vec2(0.0, 0.0));
-		vector<vec3> vn(1, vec3(0.0, 0.0, 0.0));
+		vector<vmath::vec3> v(1, vmath::vec3(0.0, 0.0, 0.0));
+		vector<vmath::vec2> vt(1, vmath::vec2(0.0, 0.0));
+		vector<vmath::vec3> vn(1, vmath::vec3(0.0, 0.0, 0.0));
 		bool skip = true;
 
 		while (!f.eof()) {
@@ -132,9 +132,9 @@ public:
 			string flag = t[0];
 
 			if (flag == "#") continue;
-			else if (flag == "v") v.push_back(vec3(stof(t[1]), stof(t[2]), stof(t[3])));
-			else if (flag == "vt") vt.push_back(vec2(stof(t[1]), stof(t[2])));
-			else if (flag == "vn") vn.push_back(vec3(stof(t[1]), stof(t[2]), stof(t[3])));
+			else if (flag == "v") v.push_back(vmath::vec3(stof(t[1]), stof(t[2]), stof(t[3])));
+			else if (flag == "vt") vt.push_back(vmath::vec2(stof(t[1]), stof(t[2])));
+			else if (flag == "vn") vn.push_back(vmath::vec3(stof(t[1]), stof(t[2]), stof(t[3])));
 			else if (flag == "g") {
 				if (group) {
 					if (skip) {
@@ -150,7 +150,7 @@ public:
 				bool quad = ( t.size() == 5 );
 				auto parse = [](const string& s) {
 					auto p = tokenize(s, "/");
-					return vertex(vec3(), vec2(), vec3());
+					return vertex(vmath::vec3(), vmath::vec2(), vmath::vec3());
 					};
 				auto p1 = tokenize(t[1], "/"), p2 = tokenize(t[2], "/"), p3 = tokenize(t[3], "/");
 				vertex v1(v[stoi(p1[0])], vt[stoi(p1[1])], vn[stoi(p1[2])]);
@@ -184,8 +184,8 @@ public:
 		glEnableVertexAttribArray(1);
 		glEnableVertexAttribArray(2);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(vertex), 0);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(vertex), (GLvoid*)( sizeof(vec3) ));
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(vertex), (GLvoid*)( sizeof(vec3) + sizeof(vec2) ));
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(vertex), (GLvoid*)( sizeof(vmath::vec3) ));
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(vertex), (GLvoid*)( sizeof(vmath::vec3) + sizeof(vmath::vec2) ));
 		glDrawArrays(GL_TRIANGLES, 0, size);
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);

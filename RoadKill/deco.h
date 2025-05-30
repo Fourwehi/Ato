@@ -4,6 +4,7 @@
 #include <GL/freeglut.h>
 #include <iostream>
 
+#include <vmath.h>
 #include "utility.h"
 #include "view.h"
 #include "game.h"
@@ -26,7 +27,7 @@ public:
 	inline void draw() const {
 		Shader::push();
 		Shader::translate(pos);
-		Shader::translate(vec3(0.0, ( lane - 0.5 ) * Game::getGrid(), 0.0));
+		Shader::translate(vmath::vec3(0.0, ( lane - 0.5 ) * Game::getGrid(), 0.0));
 		Shader::apply();
 		Resource::Tex::road.bind();
 		Resource::Norm::road.bind();
@@ -47,10 +48,10 @@ class Env : public Object {
 public:
 	inline Env(float x, float y, float cbWidth, float cbHeight, float cbOffX, float cbOffY)
 		: Object(cbWidth, cbHeight, cbOffX, cbOffY) {
-		locate(vec3(x, y, 0.0));
+		locate(vmath::vec3(x, y, 0.0));
 	}
 
-	inline Env(vec3 pos) : Object(0.0, 0.0, 0.0, 0.0) {
+	inline Env(vmath::vec3 pos) : Object(0.0, 0.0, 0.0, 0.0) {
 		locate(pos);
 	}
 };
@@ -71,7 +72,7 @@ public:
 	inline void draw() const {
 		Shader::push();
 		Shader::translate(pos);
-		Shader::scale(vec3(scale, scale, scale));
+		Shader::scale(vmath::vec3(scale, scale, scale));
 		Shader::rotateZ(rotation);
 		Shader::apply();
 		Resource::Norm::tree.bind();
@@ -87,17 +88,17 @@ private:
 	Model* model;
 	Texture* texture;
 	Texture* normalmap;
-	vec3 orient;
-	vec2 uvshift;
+	vmath::vec3 orient;
+	vmath::vec2 uvshift;
 
 public:
-	inline Deco(vec3 pos, Model* model, Texture* texture, Texture* normalmap)
-		: model(model), texture(texture), normalmap(normalmap), uvshift(0.0) {
+	inline Deco(vmath::vec3 pos, Model* model, Texture* texture, Texture* normalmap)
+		: model(model), texture(texture), normalmap(normalmap), uvshift(vmath::vec2(0.0f, 0.0f)) { // Assuming 0.0 needs to be vec2
 		locate(pos);
 		name = "Deco";
 	}
 
-	inline Deco(vec3 pos, vec3 orient, Model* model, Texture* texture, Texture* normalmap)
+	inline Deco(vmath::vec3 pos, vmath::vec3 orient, Model* model, Texture* texture, Texture* normalmap)
 		: Deco(pos, model, texture, normalmap) {
 		this->orient = orient;
 	}
@@ -117,7 +118,7 @@ public:
 		Shader::pop();
 	}
 
-	inline void shift(vec2 uv) {
+	inline void shift(vmath::vec2 uv) {
 		uvshift = uv;
 	}
 };

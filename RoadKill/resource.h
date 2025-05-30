@@ -5,7 +5,6 @@
 
 #pragma once
 
-#include "vec.h"
 #include "model.h"
 #include "texture.h"
 

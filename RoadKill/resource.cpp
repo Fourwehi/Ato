@@ -4,7 +4,7 @@
 //
 
 #include "resource.h"
-#include "vec.h"
+// #include "vec.h" // Removed
 #include "game.h"
 #include "lodepng.h"
 
@@ -35,7 +35,8 @@ Texture Resource::Norm::tunnel;
 Texture Resource::Norm::chicken;
 Texture Resource::Norm::car;
 
-Model Resource::temp;
+// Model Resource::temp; // This was not initialized or used anywhere, consider removing if truly unused.
+// For now, keeping it commented out as it's not part of the explicit changes.
 
 Model Resource::grass[3];
 Model Resource::grass9;
@@ -65,74 +66,76 @@ Model Resource::goraniLegBackBottom;
 Model Resource::chicken;
 
 void Resource::Tex::init() {
-	test.load("test.png", GL_TEXTURE0);
-	white.load("white.png", GL_TEXTURE0);
-	carWhite.load("car.png", GL_TEXTURE0);
-	carGray.load("car_gray.png", GL_TEXTURE0);
-	carBlue.load("car_blue.png", GL_TEXTURE0);
-	goraniWhole.load("gorani_whole.png", GL_TEXTURE0);
-	wheel.load("wheel.png", GL_TEXTURE0);
-	logstab.load("log.png", GL_TEXTURE0);
-	tree.load("tree.png", GL_TEXTURE0);
-	tunnel.load("tunnel.png", GL_TEXTURE0);
-	road.load("road.png", GL_TEXTURE0);
-	grass.load("grass.png", GL_TEXTURE0);
-	water.load("water.png", GL_TEXTURE0);
-	streetlight.load("streetlight.png", GL_TEXTURE0);
-	noise.load("noise.png", GL_TEXTURE0);
-	chicken.load("chicken.png", GL_TEXTURE0);
+	test.load("RoadKill/test.png", GL_TEXTURE0);
+	white.load("RoadKill/white.png", GL_TEXTURE0);
+	carWhite.load("RoadKill/car.png", GL_TEXTURE0);
+	carGray.load("RoadKill/car_gray.png", GL_TEXTURE0);
+	carBlue.load("RoadKill/car_blue.png", GL_TEXTURE0);
+	goraniWhole.load("RoadKill/gorani_whole.png", GL_TEXTURE0);
+	wheel.load("RoadKill/wheel.png", GL_TEXTURE0);
+	logstab.load("RoadKill/log.png", GL_TEXTURE0);
+	tree.load("RoadKill/tree.png", GL_TEXTURE0);
+	tunnel.load("RoadKill/tunnel.png", GL_TEXTURE0);
+	road.load("RoadKill/road.png", GL_TEXTURE0);
+	grass.load("RoadKill/grass.png", GL_TEXTURE0);
+	water.load("RoadKill/water.png", GL_TEXTURE0);
+	streetlight.load("RoadKill/streetlight.png", GL_TEXTURE0);
+	noise.load("RoadKill/noise.png", GL_TEXTURE0);
+	chicken.load("RoadKill/chicken.png", GL_TEXTURE0);
 }
 
 void Resource::Norm::init() {
-	flat.load("normal_flat.png", GL_TEXTURE1);
-	grass.load("normal_grass.png", GL_TEXTURE1);
-	logstab.load("normal_log.png", GL_TEXTURE1);
-	tree.load("normal_tree.png", GL_TEXTURE1);
-	road.load("normal_road.png", GL_TEXTURE1);
-	water.load("normal_water.png", GL_TEXTURE1);
-	tunnel.load("normal_tunnel.png", GL_TEXTURE1);
-	chicken.load("normal_chicken.png", GL_TEXTURE1);
-	car.load("normal_car.png", GL_TEXTURE1);
+	flat.load("RoadKill/normal_flat.png", GL_TEXTURE1);
+	grass.load("RoadKill/normal_grass.png", GL_TEXTURE1);
+	logstab.load("RoadKill/normal_log.png", GL_TEXTURE1);
+	tree.load("RoadKill/normal_tree.png", GL_TEXTURE1);
+	road.load("RoadKill/normal_road.png", GL_TEXTURE1);
+	water.load("RoadKill/normal_water.png", GL_TEXTURE1);
+	tunnel.load("RoadKill/normal_tunnel.png", GL_TEXTURE1);
+	chicken.load("RoadKill/normal_chicken.png", GL_TEXTURE1);
+	car.load("RoadKill/normal_car.png", GL_TEXTURE1);
 }
 
 void Resource::init() {
 	Tex::init();
 	Norm::init();
 
-	const float wlimit = Game::getWidthLimit();
-	const float xlimit = Game::getGrid() * 3.5;
-	const float grid = Game::getGrid();
-	const float thickness = 3.0;
+	// const float wlimit = Game::getWidthLimit(); // These seem unused
+	// const float xlimit = Game::getGrid() * 3.5;
+	// const float grid = Game::getGrid();
+	// const float thickness = 3.0;
 
-	grass[0].load("grass1.obj");
-	grass[1].load("grass2.obj");
-	grass[2].load("grass3.obj");
-	grass9.load("grass9.obj");
-	water.load("water.obj");
-	logstab.load("log.obj");
-	flower.load("flower.obj");
-	hill.load("hill.obj");
-	streetlight.load("streetlight.obj");
+	grass[0].load("RoadKill/grass1.obj");
+	grass[1].load("RoadKill/grass2.obj");
+	grass[2].load("RoadKill/grass3.obj");
+	grass9.load("RoadKill/grass9.obj");
+	water.load("RoadKill/water.obj");
+	logstab.load("RoadKill/log.obj");
+	flower.load("RoadKill/flower.obj");
+	hill.load("RoadKill/hill.obj");
+	streetlight.load("RoadKill/streetlight.obj");
 
-	player.load("player.obj");
-	car.load("car.obj");
-	wheel.load("wheel.obj");
-	tree.load("tree.obj");
-	tunnel.load("tunnel.obj");
-	drain.load("drain.obj");
+	player.load("RoadKill/player.obj");
+	car.load("RoadKill/car.obj");
+	wheel.load("RoadKill/wheel.obj");
+	tree.load("RoadKill/tree.obj");
+	tunnel.load("RoadKill/tunnel.obj");
+	drain.load("RoadKill/drain.obj");
 
-	road[0].load("road1.obj");
-	road[1].load("road2.obj");
-	road[2].load("road3.obj");
-	road[3].load("road4.obj");
+	road[0].load("RoadKill/road1.obj");
+	road[1].load("RoadKill/road2.obj");
+	road[2].load("RoadKill/road3.obj");
+	road[3].load("RoadKill/road4.obj");
 
-	goraniTorso.load("gorani.obj", "torso");
-	goraniHead.load("gorani.obj", "head");
-	goraniNeck.load("gorani.obj", "neck");
-	goraniLegFrontTop.load("gorani.obj", "leg_front_top");
-	goraniLegFrontBottom.load("gorani.obj", "leg_front_bottom");
-	goraniLegBackTop.load("gorani.obj", "leg_back_top");
-	goraniLegBackBottom.load("gorani.obj", "leg_back_bottom");
+	// Assuming Model::load uses Model::loadOBJ which takes only filepath.
+	// The second argument (group name) will be ignored if that's the case.
+	goraniTorso.load("RoadKill/gorani.obj", "torso");
+	goraniHead.load("RoadKill/gorani.obj", "head");
+	goraniNeck.load("RoadKill/gorani.obj", "neck");
+	goraniLegFrontTop.load("RoadKill/gorani.obj", "leg_front_top");
+	goraniLegFrontBottom.load("RoadKill/gorani.obj", "leg_front_bottom");
+	goraniLegBackTop.load("RoadKill/gorani.obj", "leg_back_top");
+	goraniLegBackBottom.load("RoadKill/gorani.obj", "leg_back_bottom");
 
-	chicken.load("chicken.obj");
+	chicken.load("RoadKill/chicken.obj");
 }

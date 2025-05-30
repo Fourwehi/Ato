@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <cmath>
 
+#include <vmath.h>
 #include "object.h"
 #include "enemy.h"
 #include "view.h"
@@ -38,7 +39,7 @@ private:
 			o = new Log();
 			break;
 		}
-		o->locate(vec3(left ? -Game::getWidthLimit() : Game::getWidthLimit(), pos.y, 0.0));
+		o->locate(vmath::vec3(left ? -Game::getWidthLimit() : Game::getWidthLimit(), pos.y, 0.0));
 		o->setXvel(left ? spd : -spd);
 		push(o);
 		return o;
@@ -47,9 +48,9 @@ private:
 public:
 	inline Generator(enum type t, float y, bool left, float spd, float gapMin, float gapMax)
 		: Object(), t(t), left(left), spd(spd), gapMin(gapMin), gapMax(gapMax) {
-		locate(vec3(0.0, y, 0.0));
+		locate(vmath::vec3(0.0, y, 0.0));
 		for (float dx = frandRange(0.0, gapMax) - Game::getWidthLimit(); dx < Game::getWidthLimit(); ) {
-			create()->move(vec3(left ? dx : -dx, 0.0, 0.0));
+			create()->move(vmath::vec3(left ? dx : -dx, 0.0, 0.0));
 			alarmSet();
 			dx += alarm * spd;
 		}
@@ -95,7 +96,7 @@ private:
 		float gapMax = 640.0f - difficulty * 200.0f;
 
 		Road* r = new Road(lane);
-		r->locate(vec3(0.0, target, 0.0));
+		r->locate(vmath::vec3(0.0, target, 0.0));
 		nl->push(r);
 
 		const float wlimit = Game::getWidthLimit() - Game::getGrid() * 1.5f;
@@ -103,8 +104,8 @@ private:
 		for (float i = 0.0; i < 2.0 * flane; i += 1.0) {
 			float y = target + i * Game::getGrid();
 			nl->push(new Generator(Generator::TYPE_ENEMY, y, i >= flane, frandRange(spdMin, spdMax), gapMin, gapMax));
-			nl->push(new Deco(vec3(wlimit, y, 0.0), vec3(0.0, 0.0, 90.0), &Resource::tunnel, &Resource::Tex::tunnel, &Resource::Norm::tunnel));
-			nl->push(new Deco(vec3(-wlimit, y, 0.0), vec3(0.0, 0.0, -90.0), &Resource::tunnel, &Resource::Tex::tunnel, &Resource::Norm::tunnel));
+			nl->push(new Deco(vmath::vec3(wlimit, y, 0.0), vmath::vec3(0.0, 0.0, 90.0), &Resource::tunnel, &Resource::Tex::tunnel, &Resource::Norm::tunnel));
+			nl->push(new Deco(vmath::vec3(-wlimit, y, 0.0), vmath::vec3(0.0, 0.0, -90.0), &Resource::tunnel, &Resource::Tex::tunnel, &Resource::Norm::tunnel));
 		}
 		target += Game::getGrid() * ( flane * 2.0f );
 	}
@@ -125,8 +126,8 @@ private:
 
 			nl->push(new Water(target));
 			nl->push(new Generator(Generator::TYPE_LOG, target, left, frandRange(spdMin, spdMax), gapMin, gapMax));
-			nl->push(new Deco(vec3(-wlimit, target, 0.0), vec3(0.0, 0.0, 180.0), &Resource::drain, &Resource::Tex::tunnel, &Resource::Norm::tunnel));
-			nl->push(new Deco(vec3(wlimit, target, 0.0), vec3(0.0, 0.0, 0.0), &Resource::drain, &Resource::Tex::tunnel, &Resource::Norm::tunnel));
+			nl->push(new Deco(vmath::vec3(-wlimit, target, 0.0), vmath::vec3(0.0, 0.0, 180.0), &Resource::drain, &Resource::Tex::tunnel, &Resource::Norm::tunnel));
+			nl->push(new Deco(vmath::vec3(wlimit, target, 0.0), vmath::vec3(0.0, 0.0, 0.0), &Resource::drain, &Resource::Tex::tunnel, &Resource::Norm::tunnel));
 			target += Game::getGrid();
 		}
 	}
@@ -137,7 +138,7 @@ private:
 
 		int repeat = rand() % 3 + 1;
 
-		nl->push(new Deco(vec3(0.0, target, 0.0), &Resource::grass[repeat - 1], &Resource::Tex::grass, &Resource::Norm::grass));
+		nl->push(new Deco(vmath::vec3(0.0, target, 0.0), &Resource::grass[repeat - 1], &Resource::Tex::grass, &Resource::Norm::grass));
 
 		for (int i = 0; i < repeat; i++)
 			placeTrees(target + Game::getGrid() * i);
@@ -146,7 +147,7 @@ private:
 			if (frand() < 0.5f) {
 				int limit = (int)( Game::getWidthLimit() / Game::getGrid() );
 				int ind = rand() % ( 2 * limit - 1 ) - limit;
-				nl->push(new StreetLight(vec3(( (float)ind + 0.5f ) * Game::getGrid(), target + Game::getGrid() * ( (float)i - 0.5f ), 0.0)));
+				nl->push(new StreetLight(vmath::vec3(( (float)ind + 0.5f ) * Game::getGrid(), target + Game::getGrid() * ( (float)i - 0.5f ), 0.0)));
 			}
 		}
 
