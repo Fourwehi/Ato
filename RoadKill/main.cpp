@@ -1,6 +1,7 @@
-//
+/*
 // BetterCarryingEachOther 2016.03.11
 // CSED451 Assignment
+// THIS FILE IS NO LONGER THE MAIN ENTRY POINT. RoadKillApp.cpp (DECLARE_MAIN) is.
 //
 
 #include <iostream>
@@ -52,3 +53,4 @@ void main(int argc, char **argv)
 
 	glutMainLoop();
 }
+*/

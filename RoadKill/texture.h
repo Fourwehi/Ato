@@ -17,4 +17,5 @@ public:
 	void load(const char* fn, GLenum type);
 	void bind();
 	void nbind();
+	void cleanup();
 };

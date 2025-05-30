@@ -13,7 +13,8 @@
 #include "deco.h"
 #include "shader.h"
 #include "resource.h"
-#include "game.h"
+// #include "game.h" // Attempt to remove
+#include "RoadKillApp.h" // Added for APP_GRID_SIZE, APP_WIDTH_LIMIT
 
 class Enemy : public Object {
 protected:
@@ -29,7 +30,7 @@ public:
 		Object::update();
 		dist += vmath::length(vel);
 
-		if (pos.x > Game::getWidthLimit() || pos.x < -Game::getWidthLimit())
+		if (pos[0] > RoadKillApp::APP_WIDTH_LIMIT || pos[0] < -RoadKillApp::APP_WIDTH_LIMIT) // pos.x -> pos[0]
 			expire();
 	}
 };
@@ -51,7 +52,7 @@ public:
 		Shader::push();
 		Shader::translate(pos);
 		Shader::translate(vmath::vec3(0.0, 0.0, 0.0));
-		if (vel.x > 0)
+		if (vel[0] > 0) // vel.x -> vel[0]
 			Shader::rotateZ(180.0);
 		Shader::apply();
 		Resource::car.draw();

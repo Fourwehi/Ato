@@ -139,3 +139,20 @@ void Resource::init() {
 
 	chicken.load("RoadKill/chicken.obj");
 }
+
+void Resource::Tex::cleanup() {
+    test.cleanup(); white.cleanup(); carWhite.cleanup(); carGray.cleanup();
+    carBlue.cleanup(); goraniWhole.cleanup(); wheel.cleanup(); logstab.cleanup();
+    tree.cleanup(); tunnel.cleanup(); road.cleanup(); grass.cleanup();
+    water.cleanup(); streetlight.cleanup(); noise.cleanup(); chicken.cleanup();
+}
+
+void Resource::Norm::cleanup() {
+    flat.cleanup(); grass.cleanup(); logstab.cleanup(); tree.cleanup();
+    road.cleanup(); water.cleanup(); tunnel.cleanup(); chicken.cleanup(); car.cleanup();
+}
+
+void Resource::cleanup_textures() {
+    Tex::cleanup();
+    Norm::cleanup();
+}

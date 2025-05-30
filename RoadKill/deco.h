@@ -7,7 +7,8 @@
 #include <vmath.h>
 #include "utility.h"
 #include "view.h"
-#include "game.h"
+// #include "game.h" // Attempt to remove
+#include "RoadKillApp.h" // Added for APP_GRID_SIZE, APP_WIDTH_LIMIT
 #include "resource.h"
 #include "shader.h"
 #include "debug.h"
@@ -27,7 +28,7 @@ public:
 	inline void draw() const {
 		Shader::push();
 		Shader::translate(pos);
-		Shader::translate(vmath::vec3(0.0, ( lane - 0.5 ) * Game::getGrid(), 0.0));
+		Shader::translate(vmath::vec3(0.0, ( lane - 0.5 ) * RoadKillApp::APP_GRID_SIZE, 0.0));
 		Shader::apply();
 		Resource::Tex::road.bind();
 		Resource::Norm::road.bind();
@@ -38,7 +39,7 @@ public:
 
 	inline void update() {
 		Object::update();
-		if (View::getY() > pos.y + View::getZfar()) {
+		if (View::getY() > pos[1] + View::getZfar()) { // pos.y -> pos[1]
 			expire();
 		}
 	}
@@ -62,7 +63,7 @@ private:
 
 public:
 	inline Tree(float x, float y)
-		: Env(x, y, Game::getGrid(), Game::getGrid(), Game::getGrid() * 0.5, Game::getGrid() * 0.5) {
+		: Env(x, y, RoadKillApp::APP_GRID_SIZE, RoadKillApp::APP_GRID_SIZE, RoadKillApp::APP_GRID_SIZE * 0.5f, RoadKillApp::APP_GRID_SIZE * 0.5f) { // Added 'f' suffix
 		scale = frandRange(1.0, 1.5);
 		rotation = frandRange(0.0, 360.0);
 		cat = OBJ_RIGID;
@@ -106,9 +107,9 @@ public:
 	inline void draw() const {
 		Shader::push();
 		Shader::translate(pos);
-		Shader::rotateX(orient.x);
-		Shader::rotateY(orient.y);
-		Shader::rotateZ(orient.z);
+		Shader::rotateX(orient[0]); // orient.x -> orient[0]
+		Shader::rotateY(orient[1]); // orient.y -> orient[1]
+		Shader::rotateZ(orient[2]); // orient.z -> orient[2]
 		Shader::shift(uvshift);
 		Shader::apply();
 		texture->bind();

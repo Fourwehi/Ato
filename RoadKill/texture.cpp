@@ -52,3 +52,10 @@ void Texture::bind() {
 void Texture::nbind() {
 	glBindTexture(GL_TEXTURE_2D, buf);
 }
+
+void Texture::cleanup() {
+    if (buf != 0) {
+        glDeleteTextures(1, &buf);
+        buf = 0;
+    }
+}
