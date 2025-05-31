@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GL/glew.h>
+#include <GL/gl3w.h> // Changed from glew.h
 #include <iostream>
 #include "view.h"
 
@@ -28,9 +28,24 @@ protected:
 	}
 
 public:
-	inline Framebuffer(GLsizei w, GLsizei h) : w(w), h(h) {}
+	inline Framebuffer(GLsizei w, GLsizei h) : w(w), h(h), fb(0), diffuse(0), position(0), normal(0), dep(0) {} // Initialize members to 0
+
+	inline void setup(GLsizei w_in, GLsizei h_in) { this->w = w_in; this->h = h_in; }
+
+	inline void destroy() {
+		if (fb != 0) { glDeleteFramebuffers(1, &fb); fb = 0; }
+		if (diffuse != 0) { glDeleteTextures(1, &diffuse); diffuse = 0; }
+		if (position != 0) { glDeleteTextures(1, &position); position = 0; }
+		if (normal != 0) { glDeleteTextures(1, &normal); normal = 0; }
+		if (dep != 0) { glDeleteTextures(1, &dep); dep = 0; }
+	}
 
 	inline void generate() {
+		// Ensure members are 0 before generating to prevent re-using old IDs if called multiple times
+		// or call destroy() first if that's the intended re-initialization behavior.
+		// For now, assuming generate is called once after setup or on a fresh object.
+		if (fb != 0) { /* Already generated, or needs destroy first */ return; }
+
 		glGenFramebuffers(1, &fb);
 		glBindFramebuffer(GL_FRAMEBUFFER, fb);
 

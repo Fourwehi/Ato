@@ -8,6 +8,7 @@
 
 #include <sb7.h>
 #include <vmath.h>
+#include "stb_image.h" // For stbi_load, stbi_image_free
 
 class Model{
 public:
@@ -63,6 +64,7 @@ public:
 	}
 
 	void setupMesh(int _numVertices, GLfloat *_vPositions, GLfloat *_vTexCoords = NULL, GLfloat* _vNormals = NULL) {
+		if (this->VAO == 0) { this->init(); }
 		// 1. copy data from arrays
 		for (int i = 0; i < _numVertices; i++) {
 			vmath::vec3 position;
@@ -158,6 +160,7 @@ public:
 	}
 
 	bool loadOBJ(const char *filepath) {
+		if (this->VAO == 0) { this->init(); }
 		FILE *file = fopen(filepath, "r");
 		if (file == NULL) 
 			return false;

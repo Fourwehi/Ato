@@ -6,6 +6,7 @@
 #pragma once
 
 #include <cstdlib>
+#include <vmath.h>
 #include "object.h"
 #include "shader.h"
 #include "resource.h"
@@ -13,16 +14,16 @@
 
 class Light : public Object {
 private:
-	vec4 color;
+	vmath::vec4 color;
 
 public:
-	inline Light(vec3 pos, vec4 color) : color(color) {
+	inline Light(vmath::vec3 pos, vmath::vec4 color) : color(color) {
 		locate(pos);
 	}
 
 	inline void update() {
 		if (!Control::isDay()) {
-			Shader::lightPush(vec4(pos, 1.0), color);
+			Shader::lightPush(vmath::vec4(pos, 1.0f), color); // Assuming vmath::vec4 can be constructed from vmath::vec3 and a float
 		}
 	}
 };
@@ -30,30 +31,30 @@ public:
 class StreetLight : public Object {
 private:
 	float angle;
-	vec3 dpos;
+	vmath::vec3 dpos;
 
 public:
-	inline StreetLight(vec3 pos) {
+	inline StreetLight(vmath::vec3 pos) {
 		switch (rand() % 4) {
 		case 0:
 			angle = 180.0;
-			dpos = vec3(16.0, 0.0, 96.0);
+			dpos = vmath::vec3(16.0, 0.0, 96.0);
 			break;
 		case 1:
 			angle = 270.0;
-			dpos = vec3(0.0, 16.0, 96.0);
+			dpos = vmath::vec3(0.0, 16.0, 96.0);
 			break;
 		case 2:
 			angle = 0.0;
-			dpos = vec3(-16.0, 0.0, 96.0);
+			dpos = vmath::vec3(-16.0, 0.0, 96.0);
 			break;
 		case 3:
 			angle = 90.0;
-			dpos = vec3(0.0, -16.0, 96.0);
+			dpos = vmath::vec3(0.0, -16.0, 96.0);
 			break;
 		}
 		locate(pos);
-		push(new Light(pos + dpos, vec4(1.0, 0.8, 0.6, 100.0)));
+		push(new Light(pos + dpos, vmath::vec4(1.0, 0.8, 0.6, 100.0)));
 	}
 
 	inline void draw() const {

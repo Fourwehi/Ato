@@ -3,7 +3,7 @@
 // texture management unit
 //
 
-#include <GL/glew.h>
+#include <GL/gl3w.h> // Changed from glew.h
 
 #include "texture.h"
 #include "lodepng.h"
@@ -34,7 +34,8 @@ void Texture::load(const char* fn, GLenum type) {
 	glGenTextures(1, &buf);
 	glBindTexture(GL_TEXTURE_2D, buf);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, &image[0]);
-	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, w, h, GL_RGBA, GL_UNSIGNED_BYTE, &image[0]);
+	//gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, w, h, GL_RGBA, GL_UNSIGNED_BYTE, &image[0]); // Replaced
+	glGenerateMipmap(GL_TEXTURE_2D); // New line
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -50,4 +51,11 @@ void Texture::bind() {
 
 void Texture::nbind() {
 	glBindTexture(GL_TEXTURE_2D, buf);
+}
+
+void Texture::cleanup() {
+    if (buf != 0) {
+        glDeleteTextures(1, &buf);
+        buf = 0;
+    }
 }

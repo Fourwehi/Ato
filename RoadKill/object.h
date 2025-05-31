@@ -4,9 +4,10 @@
 
 #include <list>
 #include <iostream>
-#include "model.h"
+#include <vmath.h>
+#include "Model.h" // Corrected case
 #include "view.h"
-#include "game.h"
+// #include "game.h" // Attempting to remove
 #include "debug.h"
 
 using namespace std;
@@ -22,7 +23,7 @@ public:
 protected:
 	enum Category cat;
 	float cbWidth, cbHeight, cbOffX, cbOffY;
-	vec3 pos, vel, acc;
+	vmath::vec3 pos, vel, acc;
 
 	bool expired;
 
@@ -49,7 +50,7 @@ protected:
 	} cb;
 
 	inline void cbUpdate() {
-		cb.locate(pos.x, pos.y, cbWidth, cbHeight, cbOffX, cbOffY);
+		cb.locate(pos[0], pos[1], cbWidth, cbHeight, cbOffX, cbOffY);
 	}
 
 	Model* mod;
@@ -115,36 +116,36 @@ public:
 		return nullptr;
 	}
 
-	inline virtual Object& locate(vec3 pos) {
+	inline virtual Object& locate(vmath::vec3 pos) {
 		this->pos = pos;
 		return *this;
 	}
 
-	inline virtual Object& move(vec3 dpos) {
+	inline virtual Object& move(vmath::vec3 dpos) {
 		pos += dpos;
 		return *this;
 	}
 
-	inline virtual Object& exert(vec3 dvel) {
+	inline virtual Object& exert(vmath::vec3 dvel) {
 		vel += dvel;
 		return *this;
 	}
 
-	inline virtual Object& setX(float x) { pos.x = x; return *this; }
-	inline virtual Object& setY(float y) { pos.y = y; return *this; }
-	inline virtual Object& setZ(float z) { pos.z = z; return *this; }
+	inline virtual Object& setX(float x) { pos[0] = x; return *this; }
+	inline virtual Object& setY(float y) { pos[1] = y; return *this; }
+	inline virtual Object& setZ(float z) { pos[2] = z; return *this; }
 
-	inline virtual Object& setXvel(float xspd) { vel.x = xspd; return *this; }
-	inline virtual Object& setYvel(float yspd) { vel.y = yspd; return *this; }
-	inline virtual Object& setZvel(float zspd) { vel.z = zspd; return *this; }
+	inline virtual Object& setXvel(float xspd) { vel[0] = xspd; return *this; }
+	inline virtual Object& setYvel(float yspd) { vel[1] = yspd; return *this; }
+	inline virtual Object& setZvel(float zspd) { vel[2] = zspd; return *this; }
 
-	inline virtual Object& setXacc(float xacc) { acc.x += xacc; return *this; }
-	inline virtual Object& setYacc(float yacc) { acc.y += yacc; return *this; }
-	inline virtual Object& setZacc(float zacc) { acc.z += zacc; return *this; }
+	inline virtual Object& setXacc(float xacc) { acc[0] += xacc; return *this; }
+	inline virtual Object& setYacc(float yacc) { acc[1] += yacc; return *this; }
+	inline virtual Object& setZacc(float zacc) { acc[2] += zacc; return *this; }
 
-	inline virtual vec3 getPos() { return pos; }
-	inline virtual vec3 getVel() { return vel; }
-	inline virtual vec3 getAcc() { return acc; }
+	inline virtual vmath::vec3 getPos() { return pos; }
+	inline virtual vmath::vec3 getVel() { return vel; }
+	inline virtual vmath::vec3 getAcc() { return acc; }
 	inline virtual bool isExpired() { return expired; }
 	inline virtual enum Category getCat() { return cat; }
 };

@@ -7,6 +7,7 @@
 #include <iostream>
 #include <cmath>
 
+#include <vmath.h>
 #include "game.h"
 #include "object.h"
 #include "view.h"
@@ -44,7 +45,7 @@ public:
 		adir = 90.0;
 		flatten = 0.0;
 		aniPhase = 1.0;
-		ylimit = pos.y - Game::getGrid();
+		ylimit = pos[1] - Game::getGrid(); // pos.y -> pos[1]
 		name = "Player";
 	}
 
@@ -60,10 +61,10 @@ public:
 		Resource::Norm::flat.bind();
 
 		Shader::push();
-		Shader::translate(vec3(xx, yy, pos.z + 10.0 * sFac));
+		Shader::translate(vmath::vec3(xx, yy, pos[2] + 10.0 * sFac)); // pos.z -> pos[2]
 		Shader::rotateZ(adir + 180.0);
-		Shader::scale(lerpv3(vec3(1.0, 1.0, 1.0), vec3(1.0, 2.0, 0.3), flatten));
-		Shader::translate(vec3(0.0, 0.0, 28.0));
+		Shader::scale(lerpv3(vmath::vec3(1.0, 1.0, 1.0), vmath::vec3(1.0, 2.0, 0.3), flatten)); // Assuming lerpv3 is adapted for vmath::vec3
+		Shader::translate(vmath::vec3(0.0, 0.0, 28.0));
 		Shader::scale(0.7);
 		Shader::rotateY(10.0 * sinf(piPhase * 2.0));
 		Shader::apply();
@@ -94,32 +95,32 @@ public:
 			if (Key::keyCheckPressed('a')) dir += 90.0;
 			if (Key::keyCheckPressed('d')) dir -= 90.0;
 			if (Key::keyCheckPressed('w')) {
-				dx = Game::getGrid() * cosf(degToRad(dir));
-				dy = Game::getGrid() * sinf(degToRad(dir));
+				dx = Game::getGrid() * cosf(vmath::radians(dir));
+				dy = Game::getGrid() * sinf(vmath::radians(dir));
 				aniPhase = 0.0;
 			}
 
 			bool reject = false;
-			pos.x += dx;
-			pos.y += dy;
+			pos[0] += dx; // pos.x -> pos[0]
+			pos[1] += dy; // pos.y -> pos[1]
 			cbUpdate();
 
-			if (pos.y < ylimit) reject = true;
+			if (pos[1] < ylimit) reject = true; // pos.y -> pos[1]
 
 			if (!srnd->collide(this, OBJ_WATER)) {
-				float ddx = roundf(pos.x / Game::getGrid()) * Game::getGrid() - pos.x;
-				if (pos.x + ddx > xlimit || pos.x + ddx < -xlimit) reject = true;
+				float ddx = roundf(pos[0] / Game::getGrid()) * Game::getGrid() - pos[0]; // pos.x -> pos[0]
+				if (pos[0] + ddx > xlimit || pos[0] + ddx < -xlimit) reject = true; // pos.x -> pos[0]
 				else {
 					dx += ddx;
-					pos.x += ddx;
+					pos[0] += ddx; // pos.x -> pos[0]
 				}
 			}
 
 			if (srnd->collide(this, OBJ_RIGID)) reject = true;
 
 			if (reject) {
-				pos.x -= dx;
-				pos.y -= dy;
+				pos[0] -= dx; // pos.x -> pos[0]
+				pos[1] -= dy; // pos.y -> pos[1]
 				cbUpdate();
 			}
 
@@ -130,28 +131,28 @@ public:
 
 			if (owater) {
 				if (olog) {
-					float lx = olog->getPos().x;
-					float side = roundf(( pos.x - lx ) / Game::getGrid());
+					float lx = olog->getPos()[0]; // .x -> [0]
+					float side = roundf(( pos[0] - lx ) / Game::getGrid()); // pos.x -> pos[0]
 					side = std::max(-1.0f, std::min(1.0f, side));
-					pos.x = lx + side * Game::getGrid();
-					if (pos.x > xlimit + 0.5 * Game::getGrid() || pos.x < -xlimit - 0.5 * Game::getGrid())
+					pos[0] = lx + side * Game::getGrid(); // pos.x -> pos[0]
+					if (pos[0] > xlimit + 0.5 * Game::getGrid() || pos[0] < -xlimit - 0.5 * Game::getGrid()) // pos.x -> pos[0]
 						dead = D_OUTSIDE;
 					pos += olog->getVel();
 				}
 				else {
 					dead = D_DROWN;
-					acc = vec3(0.0, 0.0, -0.5);
+					acc = vmath::vec3(0.0, 0.0, -0.5);
 				}
 			}
 
-			ylimit = std::min(ylimit, pos.y - Game::getGrid() * 3.0f);
-			View::setViewAt(pos.x, pos.y);
+			ylimit = std::min(ylimit, pos[1] - Game::getGrid() * 3.0f); // pos.y -> pos[1]
+			View::setViewAt(pos[0], pos[1]); // pos.x -> pos[0], pos.y -> pos[1]
 		}
 	}
 
-	inline Object& locate(vec3 pos) override {
-		xx = pos.x;
-		yy = pos.y;
-		return Object::locate(pos);
+	inline Object& locate(vmath::vec3 pos_param) override { // renamed pos to pos_param to avoid conflict with member
+		xx = pos_param[0]; // .x -> [0]
+		yy = pos_param[1]; // .y -> [1]
+		return Object::locate(pos_param);
 	}
 };

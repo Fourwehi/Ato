@@ -5,8 +5,7 @@
 
 #pragma once
 
-#include "vec.h"
-#include "model.h"
+#include "Model.h" // Corrected case
 #include "texture.h"
 
 class Resource {
@@ -31,6 +30,7 @@ public:
 		static Texture chicken;
 
 		static void init();
+		static void cleanup();
 	};
 
 	class Norm {
@@ -46,9 +46,10 @@ public:
 		static Texture car;
 
 		static void init();
+		static void cleanup();
 	};
 
-	static Model temp;
+	// static Model temp; // This was commented out in a previous step, keeping it so.
 
 	static Model grass[3];
 	static Model grass9;
@@ -78,4 +79,5 @@ public:
 	static Model chicken;
 
 	static void init();
+	static void cleanup_textures(); // Renamed for clarity
 };
