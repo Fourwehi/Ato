@@ -5,7 +5,7 @@
 
 #include "resource.h"
 // #include "vec.h" // Removed
-#include "game.h"
+// #include "game.h" // Removed
 #include "lodepng.h"
 
 Texture Resource::Tex::test;
@@ -105,39 +105,39 @@ void Resource::init() {
 	// const float grid = Game::getGrid();
 	// const float thickness = 3.0;
 
-	grass[0].load("RoadKill/grass1.obj");
-	grass[1].load("RoadKill/grass2.obj");
-	grass[2].load("RoadKill/grass3.obj");
-	grass9.load("RoadKill/grass9.obj");
-	water.load("RoadKill/water.obj");
-	logstab.load("RoadKill/log.obj");
-	flower.load("RoadKill/flower.obj");
-	hill.load("RoadKill/hill.obj");
-	streetlight.load("RoadKill/streetlight.obj");
+	grass[0].loadOBJ("RoadKill/grass1.obj");
+	grass[1].loadOBJ("RoadKill/grass2.obj");
+	grass[2].loadOBJ("RoadKill/grass3.obj");
+	grass9.loadOBJ("RoadKill/grass9.obj");
+	water.loadOBJ("RoadKill/water.obj");
+	logstab.loadOBJ("RoadKill/log.obj");
+	flower.loadOBJ("RoadKill/flower.obj");
+	hill.loadOBJ("RoadKill/hill.obj");
+	streetlight.loadOBJ("RoadKill/streetlight.obj");
 
-	player.load("RoadKill/player.obj");
-	car.load("RoadKill/car.obj");
-	wheel.load("RoadKill/wheel.obj");
-	tree.load("RoadKill/tree.obj");
-	tunnel.load("RoadKill/tunnel.obj");
-	drain.load("RoadKill/drain.obj");
+	player.loadOBJ("RoadKill/player.obj");
+	car.loadOBJ("RoadKill/car.obj");
+	wheel.loadOBJ("RoadKill/wheel.obj");
+	tree.loadOBJ("RoadKill/tree.obj");
+	tunnel.loadOBJ("RoadKill/tunnel.obj");
+	drain.loadOBJ("RoadKill/drain.obj");
 
-	road[0].load("RoadKill/road1.obj");
-	road[1].load("RoadKill/road2.obj");
-	road[2].load("RoadKill/road3.obj");
-	road[3].load("RoadKill/road4.obj");
+	road[0].loadOBJ("RoadKill/road1.obj");
+	road[1].loadOBJ("RoadKill/road2.obj");
+	road[2].loadOBJ("RoadKill/road3.obj");
+	road[3].loadOBJ("RoadKill/road4.obj");
 
-	// Assuming Model::load uses Model::loadOBJ which takes only filepath.
-	// The second argument (group name) will be ignored if that's the case.
-	goraniTorso.load("RoadKill/gorani.obj", "torso");
-	goraniHead.load("RoadKill/gorani.obj", "head");
-	goraniNeck.load("RoadKill/gorani.obj", "neck");
-	goraniLegFrontTop.load("RoadKill/gorani.obj", "leg_front_top");
-	goraniLegFrontBottom.load("RoadKill/gorani.obj", "leg_front_bottom");
-	goraniLegBackTop.load("RoadKill/gorani.obj", "leg_back_top");
-	goraniLegBackBottom.load("RoadKill/gorani.obj", "leg_back_bottom");
+	// Model::loadOBJ only takes one argument (filepath).
+	// The second argument (group name) is now removed.
+	goraniTorso.loadOBJ("RoadKill/gorani.obj");
+	goraniHead.loadOBJ("RoadKill/gorani.obj");
+	goraniNeck.loadOBJ("RoadKill/gorani.obj");
+	goraniLegFrontTop.loadOBJ("RoadKill/gorani.obj");
+	goraniLegFrontBottom.loadOBJ("RoadKill/gorani.obj");
+	goraniLegBackTop.loadOBJ("RoadKill/gorani.obj");
+	goraniLegBackBottom.loadOBJ("RoadKill/gorani.obj");
 
-	chicken.load("RoadKill/chicken.obj");
+	chicken.loadOBJ("RoadKill/chicken.obj");
 }
 
 void Resource::Tex::cleanup() {

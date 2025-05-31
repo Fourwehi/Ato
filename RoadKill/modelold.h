@@ -2,7 +2,7 @@
 
 // modelold.h content
 #include <vector>
-#include <GL/glew.h>
+#include <GL/gl3w.h> // Changed from glew.h
 #include <fstream>
 #include <string>
 #include <iostream>

@@ -2,8 +2,8 @@
 
 // player.h and player.cpp combined (header-only with inline)
 
-#include <GL/glew.h>
-#include <GL/freeglut.h> // Will likely be removed/unnecessary after porting
+#include <GL/gl3w.h> // Changed from glew.h
+// #include <GL/freeglut.h> // Removed
 #include <iostream>
 #include <cmath>
 #include <algorithm> // For std::max and std::min

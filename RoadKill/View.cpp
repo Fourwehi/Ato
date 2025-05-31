@@ -3,7 +3,7 @@
 // viewing area management
 //
 
-#include <GL/glew.h>
+#include <GL/gl3w.h> // Changed from glew.h
 // #include <GL/freeglut.h> // Removed
 #include <iostream>
 #include <cmath>

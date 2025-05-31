@@ -1,6 +1,17 @@
-#include "RoadKillApp.h"
+#include "RoadKillApp.h" // Keep this first if it has precompiled header effects or general app defines
 #include <vmath.h>
 #include <iostream> // For std::cout
+#include <vector>   // For std::vector (used in shader.cpp, good to have for completeness)
+#include <stack>    // For std::stack (used in shader.cpp)
+#include <algorithm> // For std::max/min (used in Player.h)
+#include <cmath>     // For sinf, cosf, roundf
+#include <time.h>      // For srand(time(NULL))
+
+// STB_IMAGE_IMPLEMENTATION should ideally be in a dedicated .cpp or here,
+// but after most system/library headers and before project headers that use its functions via Model.h
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h" // Copied to RoadKill/stb_image.h
+
 #include <sb7program.h>
 #include "shader.h" // For Shader class static methods
 #include "Resource.h" // For Resource::init()
@@ -9,9 +20,8 @@
 #include "Deco.h"
 #include "generator.h" // For MetaGenerator
 #include "null.h"      // For NullLimiter
-#include <time.h>      // For srand(time(NULL))
 // Ensure vmath is included, usually via RoadKillApp.h or shader.h
-// #include <vmath.h> // Already in RoadKillApp.h
+// #include <vmath.h> // Already in RoadKillApp.h or other project headers
 
 RoadKillApp::RoadKillApp() : m_pool(nullptr), m_player(nullptr), m_previousTime(0.0), m_hillL_ptr(nullptr), m_hillR_ptr(nullptr) {
     // Initialize key states
@@ -28,10 +38,18 @@ void RoadKillApp::startup()
     // It's better to have srand in the constructor or once at the very beginning if possible.
     // For now, assuming it's fine here if it was the only place. Let's ensure it's called once.
     // The previous diff showed srand(time(NULL)); was already added to startup.
+    srand(time(NULL)); // Ensure srand is called once.
 
     // OpenGL states
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
+
+    // Initialize GL3W (replaces glewInit)
+    if (gl3wInit()) {
+        std::cerr << "Failed to initialize GL3W" << std::endl;
+        // Consider throwing an exception or exiting
+        // For now, just print error and continue, sb7::application might handle exit
+    }
 
     std::cout << "RoadKillApp startup() - Initializing Shaders and Resources" << std::endl;
     m_program_gouraud = sb7::program::load_from_files({"RoadKill/gouraud_v.glsl", "RoadKill/gouraud_f.glsl"}, true);

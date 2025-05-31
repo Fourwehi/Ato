@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include "model.h"
+#include "Model.h" // Corrected case
 #include "texture.h"
 
 class Resource {

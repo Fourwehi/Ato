@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <GL/glew.h>
+#include <GL/gl3w.h> // Changed from glew.h
 #include <stack>
 #include <vector>
 

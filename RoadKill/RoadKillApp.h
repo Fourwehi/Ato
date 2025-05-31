@@ -5,8 +5,8 @@
 
 // Corrected paths to be direct includes from RoadKill/
 #include "Player.h"
-#include "Object.h"
-#include "Deco.h"
+#include "object.h" // Corrected case from Object.h to object.h
+#include "deco.h" // Corrected case from Deco.h to deco.h
 #include "generator.h" // MetaGenerator is in generator.h
 #include "null.h"      // NullLimiter is in null.h
 #include "Framebuffer.h"

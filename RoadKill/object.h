@@ -5,9 +5,9 @@
 #include <list>
 #include <iostream>
 #include <vmath.h>
-#include "model.h"
+#include "Model.h" // Corrected case
 #include "view.h"
-#include "game.h"
+// #include "game.h" // Attempting to remove
 #include "debug.h"
 
 using namespace std;

@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <GL/glew.h>
-#include <GL/freeglut.h>
+#include <GL/gl3w.h> // Changed from glew.h
+// #include <GL/freeglut.h> // Removed
 #include <cstdlib>
 #include <ctime>
 #include <iostream>

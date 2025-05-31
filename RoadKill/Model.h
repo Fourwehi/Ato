@@ -8,6 +8,7 @@
 
 #include <sb7.h>
 #include <vmath.h>
+#include "stb_image.h" // For stbi_load, stbi_image_free
 
 class Model{
 public:

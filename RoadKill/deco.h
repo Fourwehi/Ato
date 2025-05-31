@@ -1,7 +1,7 @@
 #pragma once
 
-#include <GL/glew.h>
-#include <GL/freeglut.h>
+#include <GL/gl3w.h> // Changed from glew.h
+// #include <GL/freeglut.h> // Removed
 #include <iostream>
 
 #include <vmath.h>
@@ -15,7 +15,7 @@
 
 #include "object.h"
 #include "texture.h"
-#include "model.h"
+#include "Model.h" // Corrected case
 
 class Road : public Object {
 private:

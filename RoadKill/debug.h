@@ -1,8 +1,8 @@
 #pragma once
 
 #include <iostream>
-#include <GL/glew.h>
-#include <GL/freeglut.h>
+#include <GL/gl3w.h> // Changed from glew.h
+// #include <GL/freeglut.h> // Removed
 
 inline void errorecho(const char* append) {
 	std::cout << append << ": ";

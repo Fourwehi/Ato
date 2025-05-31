@@ -3,7 +3,7 @@
 // texture management unit
 //
 
-#include <GL/glew.h>
+#include <GL/gl3w.h> // Changed from glew.h
 
 #include "texture.h"
 #include "lodepng.h"
