@@ -3,46 +3,43 @@
 // viewing area management
 //
 
-#include <GL/gl3w.h> // Changed from glew.h
-// #include <GL/freeglut.h> // Removed
+#include <GL/glew.h>
+#include <GL/freeglut.h>
 #include <iostream>
 #include <cmath>
 
-// #include "game.h" // Removed
-#include "view.h" // Must be "View.h" to match filename
+#include "game.h"
+#include "view.h"
 #include "utility.h"
-// #include "mat.h" // Removed
+#include "mat.h"
 #include "shader.h"
-// #include "key.h" // Removed
-#include <vmath.h>
-#include "RoadKillApp.h" // For APP_GRID_SIZE and input methods
-#include <GLFW/glfw3.h> // For GLFW_KEY_Q
+#include "key.h"
 
 #include "debug.h"
 
-float View::x = 0.0f; // Added f
-float View::y = 0.0f; // Added f
-float View::width = 768.0f; // Added f
-float View::height = 768.0f; // Added f
-float View::tx = 0.0f; // Added f
-float View::ty = 0.0f; // Added f
+float View::x = 0.0;
+float View::y = 0.0;
+float View::width = 768.0;
+float View::height = 768.0;
+float View::tx = 0.0;
+float View::ty = 0.0;
 
-float View::offsetTop = View::height * 0.55f;
-float View::offsetLeft = View::width * 0.5f;
+float View::offsetTop = View::height * 0.55;
+float View::offsetLeft = View::width * 0.5;
 
-float View::zfar = 1000.0f;
-float View::znear = 10.0f;
-float View::aspect = View::width / View::height; // Should be fine as width/height are float
-float View::dist = 400.0f;
+float View::zfar = 1000.0;
+float View::znear = 10.0;
+float View::aspect = View::width / View::height;
+float View::dist = 400.0;
 
-float View::viewDir = 0.0f;
+float View::viewDir = 0.0;
 View::mode View::viewMode = View::VIEW_FRONT;
 
 void View::init() {
-	x = 0.0f;
-	y = -RoadKillApp::APP_GRID_SIZE * 5.0f; // Used RoadKillApp constant
-	tx = View::width * 0.5f;
-	ty = 0.0f;
+	x = 0.0;
+	y = -Game::getGrid() * 5.0;
+	tx = View::width * 0.5;
+	ty = 0.0;
 }
 
 void View::setViewAt(float _x, float _y) {
@@ -54,8 +51,8 @@ void View::setAspect(float asp) {
 	aspect = asp;
 }
 
-void View::update(RoadKillApp* app) { // Signature changed
-	if (app->is_key_first_pressed(GLFW_KEY_Q)) { // Changed to app input
+void View::update() {
+	if (Key::keyCheckPressed('q')) {
 		switch (viewMode) {
 		case VIEW_FRONT: viewMode = VIEW_BACK; break;
 		case VIEW_BACK: viewMode = VIEW_BIRD; break;
@@ -63,56 +60,82 @@ void View::update(RoadKillApp* app) { // Signature changed
 		}
 	}
 
-	x = flerp(tx, x, 0.9f);
-	y = flerp(ty, y, 0.9f);
+	x = flerp(tx, x, 0.9);
+	y = flerp(ty, y, 0.9);
 }
 
 void View::draw() {
-	vmath::mat4 projectionMatrix, viewMatrix; // Changed types
-	vmath::vec3 eye_v3, at_v3, up_v3;    // Changed types
+	mat4 projection, eyeview;
+	vec4 eye, at, up;
 
 	switch (viewMode) {
 	case VIEW_FRONT:
-		eye_v3 = vmath::vec3(x, y, RoadKillApp::APP_GRID_SIZE / 2.0f);
-		at_v3 = eye_v3 + vmath::vec3(cosf(vmath::radians(viewDir)), sinf(vmath::radians(viewDir)), 0.0f);
-		up_v3 = vmath::vec3(0.0f, 0.0f, 1.0f);
-		projectionMatrix = vmath::perspective(45.0f, aspect, znear, zfar);
-		viewMatrix = vmath::lookat(eye_v3, at_v3, up_v3);
+		eye = vec4(x, y, Game::getGrid() / 2.0, 1.0);
+		at = eye + vec4(cosf(degToRad(viewDir)), sinf(degToRad(viewDir)), 0.0, 0.0);
+		up = vec4(0.0, 0.0, 1.0, 0.0);
+
+		projection = Matrix::Perspective(45.0, aspect, znear, zfar);
+		eyeview = Matrix::LookAt(eye, at, up);
 		break;
+
 	case VIEW_BACK:
-		at_v3 = vmath::vec3(x, y, RoadKillApp::APP_GRID_SIZE / 2.0f);
-		eye_v3 = at_v3 - vmath::vec3(cosf(vmath::radians(viewDir)), sinf(vmath::radians(viewDir)), 0.0f) * dist;
-		eye_v3 += vmath::vec3(0.0f, 0.0f, dist * 0.5f);
-		up_v3 = vmath::vec3(0.0f, 0.0f, 1.0f);
-		projectionMatrix = vmath::perspective(45.0f, aspect, znear, zfar);
-		viewMatrix = vmath::lookat(eye_v3, at_v3, up_v3);
+		at = vec4(x, y, Game::getGrid() / 2.0, 1.0);
+		eye = at - vec4(cosf(degToRad(viewDir)), sinf(degToRad(viewDir)), 0.0, 0.0) * dist;
+		eye += vec4(0.0, 0.0, dist * 0.5, 0.0);
+		up = vec4(0.0, 0.0, 1.0, 0.0);
+
+		projection = Matrix::Perspective(45.0, aspect, znear, zfar);
+		eyeview = Matrix::LookAt(eye, at, up);
 		break;
+
 	case VIEW_BIRD:
-		eye_v3 = vmath::vec3(0.0f, y, zfar * 0.2f); // Made 0.0f, 0.2f
-		at_v3 = vmath::vec3(0.0f, y, -1.0f);    // Made 0.0f, -1.0f
-		up_v3 = vmath::vec3(0.0f, 1.0f, 0.0f);     // Made 0.0f, 1.0f, 0.0f
-		// Ortho parameters might need adjustment based on desired view volume
-		projectionMatrix = vmath::ortho(
-            -height / 3.0f * aspect, height / 3.0f * aspect,
-            -height / 3.0f, height / 3.0f,
-            -height, height); // Removed Game::getGrid() as it's not relevant for bird's eye Z
-		viewMatrix = vmath::lookat(eye_v3, at_v3, up_v3);
+		eye = vec4(0.0, y, zfar * 0.2, 1.0);
+		at = vec4(0.0, y, -1.0, 1.0);
+		up = vec4(0.0, 1.0, 0.0, 0.0);
+
+		projection = Matrix::Ortho(-height / 3.0 * aspect, height / 3.0 * aspect, -height / 3.0, height / 3.0, -height, height);
+		eyeview = Matrix::LookAt(eye, at, up);
+		eye = vec4(0.0, y, zfar, 1.0);
 		break;
 	}
-	Shader::getPhysicalShader().setProjection(projectionMatrix);
-	Shader::getPhysicalShader().setEyeView(viewMatrix);
-	Shader::getPhysicalShader().setEye(vmath::vec4(eye_v3, 1.0f)); // Pass vmath::vec4
+
+	Shader::getPhysicalShader().setProjection(projection);
+	Shader::getPhysicalShader().setEyeView(eyeview);
+	Shader::getPhysicalShader().setEye(eye);
 }
 
 void View::setViewDir(float dir) {
 	viewDir = dir;
 }
-// ... (getWidth, getHeight, etc. methods remain the same) ...
-float View::getWidth() { return width; }
-float View::getHeight() { return height; }
-float View::getX() { return x; }
-float View::getY() { return y; }
-float View::getZfar() { return zfar; }
-float View::getZnear() { return znear; }
-float View::getViewDir() { return viewDir; }
-View::mode View::getViewMode() { return viewMode; }
+
+float View::getWidth() {
+	return width;
+}
+
+float View::getHeight() {
+	return height;
+}
+
+float View::getX() {
+	return x;
+}
+
+float View::getY() {
+	return y;
+}
+
+float View::getZfar() {
+	return zfar;
+}
+
+float View::getZnear() {
+	return znear;
+}
+
+float View::getViewDir() {
+	return viewDir;
+}
+
+View::mode View::getViewMode() {
+	return viewMode;
+}

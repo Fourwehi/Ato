@@ -133,6 +133,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -142,18 +143,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="10주차.cpp" />
-    <ClCompile Include="11주차.cpp" />
-    <ClCompile Include="2주차.cpp" />
-    <ClCompile Include="3주차.cpp" />
-    <ClCompile Include="4주차.cpp" />
-    <ClCompile Include="5주차.cpp" />
-    <ClCompile Include="6주차.cpp" />
-    <ClCompile Include="7주차.cpp" />
-    <ClCompile Include="8주차.cpp" />
-    <ClCompile Include="midterm.cpp" />
+    <ClCompile Include="example.cpp" />
     <ClCompile Include="_myApp_.cpp" />
-    <ClCompile Include="중간고사연습.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="simple_phong_fs.glsl" />

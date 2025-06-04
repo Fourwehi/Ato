@@ -5,8 +5,7 @@
 
 #pragma once
 
-// #include "object.h" // Removed
-class RoadKillApp; // Forward declaration
+#include "object.h"
 
 class View {
 public:
@@ -33,7 +32,7 @@ public:
 	static void setViewAt(float _x, float _y);
 	static void setAspect(float asp);
 	static void setViewDir(float dir);
-	static void update(RoadKillApp* app); // Signature changed
+	static void update();
 	static void draw();
 	static float getWidth();
 	static float getHeight();

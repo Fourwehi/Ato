@@ -21,38 +21,8 @@
     <ClCompile Include="_myApp_.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="2주차.cpp">
-      <Filter>주차 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="3주차.cpp">
-      <Filter>주차 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="4주차.cpp">
-      <Filter>주차 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="5주차.cpp">
-      <Filter>주차 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="6주차.cpp">
-      <Filter>주차 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="7주차.cpp">
-      <Filter>주차 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="8주차.cpp">
-      <Filter>주차 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="중간고사연습.cpp">
-      <Filter>주차 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="midterm.cpp">
-      <Filter>주차 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="10주차.cpp">
-      <Filter>주차 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="11주차.cpp">
-      <Filter>주차 파일</Filter>
+    <ClCompile Include="example.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
