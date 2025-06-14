@@ -1,277 +1,288 @@
-#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
-
-// sb7.h 헤더 파일을 포함시킨다.
+// sb7.h 헤더 파일을 포함합니다.
 #include <sb7.h>
 #include <vmath.h>
 #include <shader.h>
 #include <vector>
+#include <string>  // for std::to_string
+#include <iostream> // for std::cout
 
+// stb_image.h와 Model.h는 요구사항에 따라 포함하지만,
+// 이 특정 프로젝트에서는 직접 사용되지 않을 수 있습니다.
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include "Model.h"
 
-// sb6::application을 상속받는다.
-class my_application : public sb7::application
+// 직접 구현한 헤더 전용 클래스들을 포함합니다.
+#include "GameConstants.h"
+#include "Score.h"
+#include "Tetromino.h"
+#include "Board.h"
+
+
+// sb7::application 클래스를 상속받아 메인 애플리케이션 클래스를 정의합니다.
+class tetris_app : public sb7::application
 {
+private:
+	GLuint          shader_program; // 셰이더 프로그램 객체
+
+	// 셰이더 유니폼 변수 위치 저장을 위한 변수들
+	struct {
+		GLint       P;   // Projection Matrix
+		GLint       V;   // View Matrix
+		GLint       M;   // Model Matrix
+		GLint       mode; // Rendering Mode (0: color, 1: lighting)
+	} uniforms;
+
+	// 게임 로직 객체들
+	Board* gameBoard;
+	Tetromino* currentTetromino;
+	Score* gameScore;
+
+	// 게임 상태 변수들
+	bool            gameOver;
+	double          lastFallTime;   // 마지막으로 블록이 떨어진 시간
+	double          fallSpeed;      // 현재 블록 하강 속도
+	bool            fastDrop;       // 아래 방향키로 빠른 하강 중인지 여부
+
 public:
-	// 쉐이더 프로그램 컴파일한다.
-	GLuint compile_shader ( const char* vs_file , const char* fs_file )
+	// 렌더링 함수를 오버라이드합니다. 매 프레임 호출됩니다.
+	void render ( double currentTime ) override
 	{
-		// 버텍스 쉐이더를 생성하고 컴파일한다.
-		GLuint vertex_shader = sb7::shader::load ( vs_file , GL_VERTEX_SHADER );
+		// --- 1. 게임 로직 업데이트 ---
+		if ( !gameOver )
+		{
+			double deltaTime = currentTime - lastFallTime;
+			if ( deltaTime > fallSpeed )
+			{
+				lastFallTime = currentTime;
 
-		// 프래그먼트 쉐이더를 생성하고 컴파일한다.
-		GLuint fragment_shader = sb7::shader::load ( fs_file , GL_FRAGMENT_SHADER );
+				// 테트로미노를 한 칸 아래로 이동 시도
+				currentTetromino->move ( 0 , 1 );
+				if ( gameBoard->checkCollision ( *currentTetromino ) )
+				{
+					// 충돌이 발생하면, 이전 위치로 되돌리고 보드에 고정합니다.
+					currentTetromino->move ( 0 , -1 );
+					gameBoard->addTetrominoToBoard ( *currentTetromino );
 
-		// 프로그램을 생성하고 쉐이더를 Attach시키고 링크한다.
-		GLuint program = glCreateProgram ( );
-		glAttachShader ( program , vertex_shader );
-		glAttachShader ( program , fragment_shader );
-		glLinkProgram ( program );
+					// 완성된 줄이 있는지 확인하고 점수를 업데이트합니다.
+					int clearedLines = gameBoard->checkAndClearLines ( );
+					if ( clearedLines > 0 )
+					{
+						gameScore->addScore ( clearedLines );
+						// 윈도우 제목에 점수를 업데이트합니다.
+						std::string title = "Tetris 3D - Score: " + std::to_string ( gameScore->getScore ( ) );
+						// set_title(title.c_str());  <- [수정됨] 잘못된 함수 호출
+						glfwSetWindowTitle ( window , title.c_str ( ) ); // [수정됨] 올바른 함수 호출
+					}
 
-		// 이제 프로그램이 쉐이더를 소유하므로 쉐이더를 삭제한다.
-		glDeleteShader ( vertex_shader );
-		glDeleteShader ( fragment_shader );
+					// 새 테트로미노를 스폰합니다.
+					currentTetromino->spawnNew ( );
 
-		return program;
-	}
+					// 새 테트로미노가 스폰되자마자 충돌하면 게임 오버입니다.
+					if ( gameBoard->checkCollision ( *currentTetromino ) )
+					{
+						gameOver = true;
+						// set_title("GAME OVER - Press 'R' to Restart"); <- [수정됨] 잘못된 함수 호출
+						glfwSetWindowTitle ( window , "GAME OVER - Press 'R' to Restart" ); // [수정됨] 올바른 함수 호출
+					}
+				}
+			}
+		}
 
-	// 애플리케이션 초기화 수행한다.
-	virtual void startup ( )
-	{
-		// 클래스 내부 변수 초기화
-		initValues ( );
-
-		// 쉐이더 프로그램 컴파일 및 연결
-		shader_program = compile_shader ( "simple_phong_vs.glsl" , "simple_phong_fs.glsl" );
-
-		stbi_set_flip_vertically_on_load ( true );
-
-		// 첫 번째 객체 정의 : OBJ 모델  --------------------------------------------------
-		objModel.init ( );
-		objModel.loadOBJ ( "squid_girl.obj" );
-		objModel.loadDiffuseMap ( "squid_girl.png" );
-
-		// 두 번째 객체 정의 : 피라미드 --------------------------------------------------
-		// 피라미드 점들의 위치와 컬러, 텍스처 좌표를 정의한다.
-		GLfloat pyramid_vertices[ ] = {
-			1.0f, 0.0f, -1.0f,    // 우측 상단
-			-1.0f, 0.0f, -1.0f,   // 좌측 상단
-			-1.0f, 0.0f, 1.0f,    // 좌측 하단
-			1.0f, 0.0f, 1.0f,     // 우측 하단
-			0.0f, 1.0f, 0.0f,      // 상단 꼭지점
-			0.0f, -1.0f, 0.0f,      // 하단 꼭지점
-		};
-
-		// 삼각형으로 그릴 인덱스를 정의한다.
-		GLuint pyramid_indices[ ] = {
-			4, 0, 1,
-			4, 1, 2,
-			4, 2, 3,
-			4, 3, 0,
-
-			5, 1, 0,
-			5, 2, 1,
-			5, 3, 2,
-			5, 0, 3,
-		};
-
-		pyramidModel.init ( );
-		pyramidModel.setupMesh ( 6 , pyramid_vertices );
-		pyramidModel.setupIndices ( 24 , pyramid_indices );
-
-		glEnable ( GL_MULTISAMPLE );
-	}
-
-	// 애플리케이션 끝날 때 호출된다.
-	virtual void shutdown ( )
-	{
-		glDeleteProgram ( shader_program );
-	}
-
-	// 렌더링 virtual 함수를 작성해서 오버라이딩한다.
-	virtual void render ( double currentTime )
-	{
-		if ( !pause )
-			animationTime += currentTime - previousTime;
-		previousTime = currentTime;
-
-		//const GLfloat color[] = { (float)sin(currentTime) * 0.5f + 0.5f, (float)cos(currentTime) * 0.5f + 0.5f, 0.0f, 1.0f };
-		const GLfloat black[ ] = { 0.0f, 0.0f, 0.0f, 1.0f };
+		// --- 2. 렌더링 ---
+		// 화면을 특정 색상으로 지웁니다.
+		static const GLfloat black[ ] = { 0.1f, 0.1f, 0.1f, 1.0f };
 		glClearBufferfv ( GL_COLOR , 0 , black );
-		glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+		// 깊이 버퍼를 활성화하고 지웁니다.
 		glEnable ( GL_DEPTH_TEST );
-		glEnable ( GL_CULL_FACE );
+		glClearBufferfv ( GL_DEPTH , 0 , &vmath::vec1 ( 1.0f )[ 0 ] );
 
-
-		// 카메라 매트릭스 계산
-		float distance = 5.f;
-		//vmath::vec3 eye((float)cos(animationTime*0.3f)*distance, 1.0, (float)sin(animationTime*0.3f)*distance);
-		vmath::vec3 eye ( 0.0f , 1.0f , distance );
-		vmath::vec3 center ( 0.0 , 0.0 , 0.0 );
-		vmath::vec3 up ( 0.0 , 1.0 , 0.0 );
-		vmath::mat4 lookAt = vmath::lookat ( eye , center , up );
-		vmath::mat4 projM = vmath::perspective ( fov , ( float ) info.windowWidth / ( float ) info.windowHeight , 0.1f , 1000.0f );
-
-		// 라이팅 설정 ---------------------------------------
-		float r = 2.f;
-		vmath::vec3 lightPos = vmath::vec3 ( ( float ) sin ( animationTime * 0.5f ) * r , 0.f , ( float ) cos ( animationTime * 0.5f ) * r );
-		vmath::vec3 viewPos = eye;
-
-		vmath::vec3 lightAmbient ( 0.2f , 0.2f , 0.2f );
-		vmath::vec3 lightDiffuse ( 0.5f , 0.5f , 0.5f );
-		vmath::vec3 lightSpecular ( 1.0f , 1.0f , 1.0f );
-
-		// 모델 그리기 ---------------------------------------
+		// 셰이더 프로그램을 사용합니다.
 		glUseProgram ( shader_program );
 
-		glUniformMatrix4fv ( glGetUniformLocation ( shader_program , "projection" ) , 1 , GL_FALSE , projM );
-		glUniformMatrix4fv ( glGetUniformLocation ( shader_program , "view" ) , 1 , GL_FALSE , lookAt );
+		// --- 행렬 설정 (vmath 사용) ---
+		// Projection 행렬: 원근 투영을 설정합니다. (시야각 60도)
+		vmath::mat4 proj_matrix = vmath::perspective ( 60.0f , ( float ) info.windowWidth / ( float ) info.windowHeight , 0.1f , 1000.0f );
 
-		glUniform3fv ( glGetUniformLocation ( shader_program , "viewPos" ) , 1 , viewPos );
+		// View 행렬: 카메라의 위치와 방향을 설정합니다.
+		// 보드를 약간 위에서 비스듬히 내려다보는 시점입니다.
+		vmath::vec3 eye_pos = vmath::vec3 ( 0.0f , 5.0f , -15.0f );
+		vmath::vec3 target_pos = vmath::vec3 ( 0.0f , -2.0f , 0.0f );
+		vmath::vec3 up_dir = vmath::vec3 ( 0.0f , 1.0f , 0.0f );
+		vmath::mat4 view_matrix = vmath::lookat ( eye_pos , target_pos , up_dir );
 
-		glUniform3fv ( glGetUniformLocation ( shader_program , "light.position" ) , 1 , lightPos );
-		glUniform3fv ( glGetUniformLocation ( shader_program , "light.ambient" ) , 1 , lightAmbient );
-		glUniform3fv ( glGetUniformLocation ( shader_program , "light.diffuse" ) , 1 , lightDiffuse );
-		glUniform3fv ( glGetUniformLocation ( shader_program , "light.specular" ) , 1 , lightSpecular );
+		// 계산된 Projection, View 행렬을 셰이더의 uniform 변수로 전달합니다.
+		glUniformMatrix4fv ( uniforms.P , 1 , GL_FALSE , proj_matrix );
+		glUniformMatrix4fv ( uniforms.V , 1 , GL_FALSE , view_matrix );
 
+		// 렌더링 모드를 0 (단순 컬러 모드)으로 설정합니다.
+		glUniform1i ( uniforms.mode , 0 );
 
-		if ( lineMode )
-			glPolygonMode ( GL_FRONT_AND_BACK , GL_LINE );
-		else
-			glPolygonMode ( GL_FRONT_AND_BACK , GL_FILL );
+		// --- 보드에 쌓인 블록들 그리기 ---
+		const auto& boardState = gameBoard->getBoardState ( );
+		glBindVertexArray ( gameBoard->getCubeVao ( ) );
 
-		if ( drawModel ) {
-			vmath::mat4 model = vmath::translate ( objPosition ) *
-				vmath::rotate ( objYangle , 0.0f , 1.0f , 0.0f ) *
-				vmath::scale ( 0.01f );
-			glUniformMatrix4fv ( glGetUniformLocation ( shader_program , "model" ) , 1 , GL_FALSE , model );
-			objModel.draw ( shader_program );
-		}
-
-		// 피라미드 그리기 ---------------------------------------
-		if ( drawLight ) {
-			vmath::mat4 transform = vmath::translate ( lightPos ) * vmath::scale ( 0.05f );
-			glUniformMatrix4fv ( glGetUniformLocation ( shader_program , "model" ) , 1 , GL_FALSE , transform );
-			pyramidModel.draw ( shader_program );
-		}
-
-
-	}
-
-	virtual void onResize ( int w , int h )
-	{
-		sb7::application::onResize ( w , h );
-
-		if ( glViewport != NULL )
-			glViewport ( 0 , 0 , info.windowWidth , info.windowHeight );
-	}
-
-	virtual void init ( )
-	{
-		sb7::application::init ( );
-
-		info.samples = 8;
-		info.flags.debug = 1;
-	}
-
-	virtual void onKey ( int key , int action )
-	{
-		if ( action == GLFW_PRESS ) {
-			switch ( key ) {
-			case ' ': // 스페이스바
-				pause = !pause;
-				break;
-			case '1':
-				drawModel = !drawModel;
-				break;
-			case '2':
-				drawLight = !drawLight;
-				break;
-			case 'M':
-				lineMode = !lineMode;
-				break;
-			case 'R':
-				initValues ( );
-				break;
-			default:
-				break;
-			};
-		}
-	}
-
-	virtual void onMouseButton ( int button , int action )
-	{
-		if ( button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS )
+		for ( int y = 0; y < GameConstants::BOARD_HEIGHT; ++y )
 		{
-			mouseDown = true;
+			for ( int x = 0; x < GameConstants::BOARD_WIDTH; ++x )
+			{
+				if ( boardState[ y ][ x ] != 0 )
+				{
+					// 블록의 월드 좌표 계산
+					float worldX = GameConstants::BOARD_START_X + x * GameConstants::CUBE_SIZE + 0.5f;
+					float worldY = GameConstants::BOARD_START_Y + ( GameConstants::BOARD_HEIGHT - 1 - y ) * GameConstants::CUBE_SIZE + 0.5f;
 
-			int x , y;
-			getMousePosition ( x , y );
-			mousePostion = vmath::vec2 ( float ( x ) , float ( y ) );
+					// Model 행렬 생성 (vmath::translate 사용)
+					vmath::mat4 model_matrix = vmath::translate ( worldX , worldY , 0.0f );
+
+					// Model 행렬과 색상을 셰이더에 전달하고 큐브를 그립니다.
+					glUniformMatrix4fv ( uniforms.M , 1 , GL_FALSE , model_matrix );
+					vmath::vec4 color = GameConstants::PIECE_COLORS[ boardState[ y ][ x ] ];
+					glVertexAttrib4fv ( 1 , color ); // location=1에 색상 전달
+					glDrawArrays ( GL_TRIANGLES , 0 , 36 );
+				}
+			}
 		}
-		else
+
+		// --- 현재 떨어지는 테트로미노 그리기 ---
+		if ( !gameOver )
 		{
-			mouseDown = false;
+			int shapeType = currentTetromino->getShapeType ( );
+			vmath::vec4 color = GameConstants::PIECE_COLORS[ shapeType ];
+			glVertexAttrib4fv ( 1 , color ); // location=1에 색상 전달
+
+			for ( int r = 0; r < 4; ++r )
+			{
+				for ( int c = 0; c < 4; ++c )
+				{
+					if ( currentTetromino->getBlock ( r , c ) != 0 )
+					{
+						int gridX = currentTetromino->getX ( ) + c;
+						int gridY = currentTetromino->getY ( ) + r;
+
+						float worldX = GameConstants::BOARD_START_X + gridX * GameConstants::CUBE_SIZE + 0.5f;
+						float worldY = GameConstants::BOARD_START_Y + ( GameConstants::BOARD_HEIGHT - 1 - gridY ) * GameConstants::CUBE_SIZE + 0.5f;
+
+						vmath::mat4 model_matrix = vmath::translate ( worldX , worldY , 0.0f );
+						glUniformMatrix4fv ( uniforms.M , 1 , GL_FALSE , model_matrix );
+						glDrawArrays ( GL_TRIANGLES , 0 , 36 );
+					}
+				}
+			}
 		}
+
+		glBindVertexArray ( 0 );
+		glUseProgram ( 0 );
 	}
 
-	virtual void onMouseMove ( int x , int y )
+	// 애플리케이션 시작 시 한 번 호출됩니다.
+	void startup ( ) override
 	{
-		if ( mouseDown )
+		// 셰이더를 로드하고 컴파일합니다.
+		shader_program = sb7::shader::load ( "tetris.vs.glsl" , "tetris.fs.glsl" );
+
+		// 셰이더의 uniform 변수들의 위치를 얻어옵니다.
+		uniforms.M = glGetUniformLocation ( shader_program , "M" );
+		uniforms.V = glGetUniformLocation ( shader_program , "V" );
+		uniforms.P = glGetUniformLocation ( shader_program , "P" );
+		uniforms.mode = glGetUniformLocation ( shader_program , "mode" );
+
+		// 게임 객체들을 생성합니다.
+		gameBoard = new Board ( );
+		currentTetromino = new Tetromino ( );
+		gameScore = new Score ( );
+
+		// 게임을 초기화합니다.
+		restartGame ( );
+
+		// 난수 시드를 초기화합니다.
+		srand ( ( unsigned int ) time ( NULL ) );
+	}
+
+	// 애플리케이션의 기본 정보를 설정합니다.
+	void configure ( sb7::application::app_config& config ) override
+	{
+		config.title = "Tetris 3D";
+	}
+
+	// 애플리케이션 종료 시 한 번 호출됩니다.
+	void shutdown ( ) override
+	{
+		glDeleteProgram ( shader_program );
+		delete gameBoard;
+		delete currentTetromino;
+		delete gameScore;
+	}
+
+	// 게임 재시작 함수
+	void restartGame ( )
+	{
+		gameOver = false;
+		gameBoard->reset ( );
+		currentTetromino->spawnNew ( );
+		gameScore->reset ( );
+		lastFallTime = 0.0;
+		fallSpeed = GameConstants::INITIAL_FALL_TIME;
+		fastDrop = false;
+		// set_title("Tetris 3D - Score: 0"); <- [수정됨] 잘못된 함수 호출
+		glfwSetWindowTitle ( window , "Tetris 3D - Score: 0" ); // [수정됨] 올바른 함수 호출
+	}
+
+	// 키보드 입력 처리 함수를 오버라이드합니다.
+	void onKey ( int key , int action ) override
+	{
+		if ( action == GLFW_PRESS || action == GLFW_REPEAT )
 		{
-			objYangle += float ( x - mousePostion[ 0 ] ) / 2.f;
-			mousePostion = vmath::vec2 ( float ( x ) , float ( y ) );
+			if ( gameOver )
+			{
+				if ( key == GLFW_KEY_R )
+				{
+					restartGame ( );
+				}
+				return;
+			}
+
+			// 임시 테트로미노를 만들어 이동/회전 가능 여부를 먼저 확인합니다.
+			Tetromino testTetromino = *currentTetromino;
+
+			switch ( key )
+			{
+			case GLFW_KEY_LEFT:
+				testTetromino.move ( -1 , 0 );
+				if ( !gameBoard->checkCollision ( testTetromino ) )
+					*currentTetromino = testTetromino;
+				break;
+			case GLFW_KEY_RIGHT:
+				testTetromino.move ( 1 , 0 );
+				if ( !gameBoard->checkCollision ( testTetromino ) )
+					*currentTetromino = testTetromino;
+				break;
+			case GLFW_KEY_UP:
+				testTetromino.rotate ( 1 ); // 시계 방향 회전
+				if ( !gameBoard->checkCollision ( testTetromino ) )
+					*currentTetromino = testTetromino;
+				break;
+			case GLFW_KEY_DOWN:
+				if ( !fastDrop ) {
+					fallSpeed = GameConstants::FAST_FALL_TIME;
+					fastDrop = true;
+				}
+				break;
+			case GLFW_KEY_R:
+				restartGame ( );
+				break;
+			}
+		}
+		else if ( action == GLFW_RELEASE )
+		{
+			if ( key == GLFW_KEY_DOWN )
+			{
+				fallSpeed = GameConstants::INITIAL_FALL_TIME;
+				fastDrop = false;
+			}
 		}
 	}
-
-#define MAX_FOV 120.f
-#define MIN_FOV 10.f
-	virtual void onMouseWheel ( int pos )
-	{
-		if ( pos > 0 )
-			fov = vmath::min ( MAX_FOV , fov + 1.0f );
-		else
-			fov = vmath::max ( MIN_FOV , fov - 1.0f );
-	}
-
-	void initValues ( )
-	{
-		drawModel = true;
-		drawLight = true;
-		pause = false;
-		animationTime = 0;
-		previousTime = 0;
-		lineMode = false;
-
-		mouseDown = false;
-
-		fov = 50.f;
-
-		objPosition = vmath::vec3 ( 0.0f , -1.0f , 0.0f );
-		objYangle = 0.f;
-	}
-
-
-private:
-	GLuint shader_program;
-
-	Model objModel , pyramidModel;
-	vmath::vec3 objPosition;
-	float objYangle;
-
-	bool drawModel , drawLight;
-	bool lineMode;
-	bool pause;
-	double previousTime;
-	double animationTime;
-
-	vmath::vec2 mousePostion;
-	bool mouseDown;
-
-	float fov;
-
 };
 
-// DECLARE_MAIN의 하나뿐인 인스턴스
-DECLARE_MAIN ( my_application )
+// 애플리케이션 인스턴스를 선언하고 실행합니다.
+DECLARE_MAIN ( tetris_app )

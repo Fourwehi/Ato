@@ -36,8 +36,6 @@ public:
 		defaultAmbient = vmath::vec3(1.0f, 1.0f, 1.0f);
 		defaultDiffuse = vmath::vec3(1.0f, 1.0f, 1.0f);
 		defaultSpecular = vmath::vec3(0.0f, 0.0f, 0.0f);
-
-		// init();
 	} 
 	// ¼Ò¸êÀÚ
 	~Model() {
@@ -66,9 +64,9 @@ public:
 		// 1. copy data from arrays
 		for (int i = 0; i < _numVertices; i++) {
 			vmath::vec3 position;
-			position[0] = _vPositions[i * 3 + 0];	//x
-			position[1] = _vPositions[i * 3 + 1];	//y
-			position[2] = _vPositions[i * 3 + 2];	//z
+			position[0] = _vPositions[i * 3 + 0];
+			position[1] = _vPositions[i * 3 + 1];
+			position[2] = _vPositions[i * 3 + 2];
 			this->vPositions.push_back(position);
 		}
 
@@ -87,7 +85,7 @@ public:
 				normal[0] = _vNormals[i * 3 + 0];
 				normal[1] = _vNormals[i * 3 + 1];
 				normal[2] = _vNormals[i * 3 + 2];
-				this->vNormals.push_back(normal); 
+				this->vNormals.push_back(normal);
 			}
 		}
 		
@@ -131,10 +129,10 @@ public:
 		glUniform3fv(glGetUniformLocation(_shaderID, "material.defaultAmbient"), 1, defaultAmbient);
 		glUniform3fv(glGetUniformLocation(_shaderID, "material.defaultDiffuse"), 1, defaultDiffuse);
 		glUniform3fv(glGetUniformLocation(_shaderID, "material.defaultSpecular"), 1, defaultSpecular);
-		glUniform1i(glGetUniformLocation(_shaderID, "material.useDiffuseMap"), (int)useDiffuseMap); //true=1, false=0
-		glUniform1i(glGetUniformLocation(_shaderID, "material.useSpecularMap"), (int)useSpecularMap); //true=1, false=0
+		glUniform1i(glGetUniformLocation(_shaderID, "material.useDiffuseMap"), (int)useDiffuseMap);
+		glUniform1i(glGetUniformLocation(_shaderID, "material.useSpecularMap"), (int)useSpecularMap);
 
-		glUniform1i(glGetUniformLocation(_shaderID, "useNormal"), (int)vNormals.size()); // true= int, false=0
+		glUniform1i(glGetUniformLocation(_shaderID, "useNormal"), (int)vNormals.size());
 		glUniform1f(glGetUniformLocation(_shaderID, "material.shininess"), shininess);
 
 		if(useDiffuseMap) {
